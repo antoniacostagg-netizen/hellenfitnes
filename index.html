@@ -748,4 +748,947 @@
         <div class="checkout-content">
             <div class="checkout-header">
                 <h3>Finalizar Pedido</h3>
-                <div
+                <div class="close-icon close-checkout">✕</div>
+            </div>
+            <div class="checkout-body">
+                <div class="min-order-warning">
+                    Pedido mínimo: 10 peças
+                </div>
+                <div class="order-summary" id="order-summary">
+                    <!-- Resumo do pedido será adicionado aqui -->
+                </div>
+                <form id="checkout-form">
+                    <div class="form-group">
+                        <label for="customer-name">Nome:</label>
+                        <input type="text" id="customer-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-cep">CEP:</label>
+                        <input type="text" id="customer-cep" required>
+                        <small>O frete será calculado quando o pedido for enviado via WhatsApp.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-address">Endereço:</label>
+                        <input type="text" id="customer-address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="delivery-type">Tipo de entrega:</label>
+                        <select id="delivery-type" required>
+                            <option value="">Selecione</option>
+                            <option value="transportadora">Transportadora</option>
+                            <option value="excursões">Excursões</option>
+                            <option value="uber">Uber</option>
+                            <option value="correio">Correio</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-phone">Telefone:</label>
+                        <input type="tel" id="customer-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Forma de pagamento:</label>
+                        <p>Pagamento apenas via PIX</p>
+                    </div>
+                    <button type="button" class="send-whatsapp-btn" id="send-whatsapp">
+                        Enviar pedido via WhatsApp
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Área administrativa (inicialmente oculta) -->
+    <div id="admin-area" style="display: none;">
+        <div class="admin-panel">
+            <div class="admin-tabs">
+                <div class="admin-tab active" data-tab="products">Gerenciar Produtos</div>
+                <div class="admin-tab" data-tab="inventory">Controle de Estoque</div>
+                <div class="admin-tab" data-tab="settings">Configurações do Site</div>
+            </div>
+            
+            <div class="admin-section active" id="products-section">
+                <h3>Adicionar Novo Produto</h3>
+                <div class="product-form">
+                    <div class="form-group">
+                        <label for="product-name">Nome do Produto:</label>
+                        <input type="text" id="product-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-price">Preço (R$):</label>
+                        <input type="number" id="product-price" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-category">Categoria:</label>
+                        <select id="product-category">
+                            <option value="conjuntos">Conjuntos</option>
+                            <option value="macaquinhos">Macaquinhos</option>
+                            <option value="tops">Tops</option>
+                            <option value="shorts">Shorts</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-images">URLs das Imagens (separadas por vírgula):</label>
+                        <textarea id="product-images" placeholder="https://exemplo.com/imagem1.jpg, https://exemplo.com/imagem2.jpg, https://exemplo.com/imagem3.jpg"></textarea>
+                    </div>
+                    <div class="color-form">
+                        <h4>Cores e Estoque</h4>
+                        <div id="color-fields">
+                            <!-- Campos de cor serão adicionados dinamicamente -->
+                        </div>
+                        <button type="button" id="add-color">Adicionar Cor</button>
+                    </div>
+                    <button type="button" class="save-btn" id="save-product">Salvar Produto</button>
+                </div>
+                
+                <h3>Produtos Existentes</h3>
+                <div id="existing-products">
+                    <!-- Lista de produtos existentes será carregada aqui -->
+                </div>
+            </div>
+            
+            <div class="admin-section" id="inventory-section">
+                <h3>Controle de Estoque</h3>
+                <table class="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Cor</th>
+                            <th>Estoque</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-table-body">
+                        <!-- Dados de estoque serão carregados aqui -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="admin-section" id="settings-section">
+                <h3>Configurações do Site</h3>
+                <div class="form-group">
+                    <label for="site-logo-url">URL da Logo:</label>
+                    <input type="text" id="site-logo-url">
+                    <button type="button" class="save-btn" id="save-logo">Salvar Logo</button>
+                </div>
+                <div class="form-group">
+                    <label for="primary-color">Cor Primária:</label>
+                    <input type="color" id="primary-color" value="#ff6b6b">
+                    <button type="button" class="save-btn" id="save-colors">Salvar Cores</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Login administrativo -->
+    <div class="admin-login" id="admin-login">
+        <h3>Área Administrativa</h3>
+        <div class="form-group">
+            <label for="admin-email">Email:</label>
+            <input type="email" id="admin-email">
+        </div>
+        <div class="form-group">
+            <label for="admin-password">Senha:</label>
+            <input type="password" id="admin-password">
+        </div>
+        <button type="button" class="save-btn" id="admin-login-btn">Entrar</button>
+    </div>
+
+    <script>
+        // ===== CONFIGURAÇÃO DO FIREBASE - SUBSTITUA COM SEUS DADOS =====
+        // COLE AQUI AS CONFIGURAÇÕES DO SEU NOVO PROJETO FIREBASE
+        const firebaseConfig = {
+    apiKey: "AIzaSyAn5SPhZJPqR6IdQecnFnMwLdDm3efy4ko",
+    authDomain: "hellen-moda-fitnes.firebaseapp.com",
+    projectId: "hellen-moda-fitnes",
+    storageBucket: "hellen-moda-fitnes.firebasestorage.app",
+    messagingSenderId: "998940228851",
+    appId: "1:998940228851:web:d4e8d3ac366c26fe9e4b86"
+  };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // ===== VARIÁVEIS GLOBAIS =====
+        let currentUser = null;
+        let products = [];
+        let cart = [];
+        let currentProduct = null;
+        let currentImageIndex = 0;
+
+        // ===== ELEMENTOS DO DOM =====
+        const elements = {
+            siteLogo: document.getElementById('site-logo'),
+            homeIcon: document.getElementById('home-icon'),
+            menuIcon: document.getElementById('menu-icon'),
+            cartIcon: document.getElementById('cart-icon'),
+            sideMenu: document.getElementById('side-menu'),
+            overlay: document.getElementById('overlay'),
+            closeMenu: document.querySelector('.close-menu'),
+            menuItems: document.querySelectorAll('.menu-items a'),
+            productsGrid: document.getElementById('products-grid'),
+            productModal: document.getElementById('product-modal'),
+            closeModal: document.querySelector('.close-modal'),
+            carouselImages: document.getElementById('carousel-images'),
+            prevBtn: document.querySelector('.prev-btn'),
+            nextBtn: document.querySelector('.next-btn'),
+            modalProductName: document.getElementById('modal-product-name'),
+            modalProductPrice: document.getElementById('modal-product-price'),
+            colorOptions: document.getElementById('color-options'),
+            addToCartBtn: document.getElementById('add-to-cart'),
+            cartSidebar: document.getElementById('cart-sidebar'),
+            closeCart: document.querySelector('.close-cart'),
+            cartItems: document.getElementById('cart-items'),
+            cartTotal: document.getElementById('cart-total'),
+            cartCount: document.getElementById('cart-count'),
+            checkoutBtn: document.getElementById('checkout-btn'),
+            floatingCheckout: document.getElementById('floating-checkout'),
+            checkoutModal: document.getElementById('checkout-modal'),
+            closeCheckout: document.querySelector('.close-checkout'),
+            orderSummary: document.getElementById('order-summary'),
+            checkoutForm: document.getElementById('checkout-form'),
+            sendWhatsApp: document.getElementById('send-whatsapp'),
+            adminArea: document.getElementById('admin-area'),
+            adminLogin: document.getElementById('admin-login'),
+            adminEmail: document.getElementById('admin-email'),
+            adminPassword: document.getElementById('admin-password'),
+            adminLoginBtn: document.getElementById('admin-login-btn'),
+            adminTabs: document.querySelectorAll('.admin-tab'),
+            adminSections: document.querySelectorAll('.admin-section'),
+            productName: document.getElementById('product-name'),
+            productPrice: document.getElementById('product-price'),
+            productCategory: document.getElementById('product-category'),
+            productImages: document.getElementById('product-images'),
+            colorFields: document.getElementById('color-fields'),
+            addColor: document.getElementById('add-color'),
+            saveProduct: document.getElementById('save-product'),
+            existingProducts: document.getElementById('existing-products'),
+            inventoryTableBody: document.getElementById('inventory-table-body'),
+            siteLogoUrl: document.getElementById('site-logo-url'),
+            primaryColor: document.getElementById('primary-color'),
+            saveLogo: document.getElementById('save-logo'),
+            saveColors: document.getElementById('save-colors')
+        };
+
+        // ===== INICIALIZAÇÃO =====
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            setupEventListeners();
+            loadProducts();
+            loadSiteSettings();
+            checkAdminAuth();
+        });
+
+        function initializeApp() {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCartUI();
+            }
+            
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    currentUser = user;
+                    showAdminPanel();
+                } else {
+                    currentUser = null;
+                    showAdminLogin();
+                }
+            });
+        }
+
+        function setupEventListeners() {
+            elements.menuIcon.addEventListener('click', toggleMenu);
+            elements.closeMenu.addEventListener('click', toggleMenu);
+            elements.overlay.addEventListener('click', closeAllModals);
+            elements.homeIcon.addEventListener('click', goToHome);
+            elements.cartIcon.addEventListener('click', toggleCart);
+            elements.closeCart.addEventListener('click', toggleCart);
+            elements.floatingCheckout.addEventListener('click', openCheckout);
+            
+            elements.menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const category = this.getAttribute('data-category');
+                    filterProducts(category);
+                    toggleMenu();
+                });
+            });
+            
+            elements.closeModal.addEventListener('click', closeProductModal);
+            elements.prevBtn.addEventListener('click', showPrevImage);
+            elements.nextBtn.addEventListener('click', showNextImage);
+            elements.addToCartBtn.addEventListener('click', addToCartFromModal);
+            
+            elements.closeCheckout.addEventListener('click', closeCheckout);
+            elements.checkoutBtn.addEventListener('click', openCheckout);
+            elements.sendWhatsApp.addEventListener('click', sendOrderViaWhatsApp);
+            
+            elements.adminLoginBtn.addEventListener('click', adminLogin);
+            elements.adminTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    switchAdminTab(this.getAttribute('data-tab'));
+                });
+            });
+            
+            elements.addColor.addEventListener('click', addColorField);
+            elements.saveProduct.addEventListener('click', saveProduct);
+            elements.saveLogo.addEventListener('click', saveSiteLogo);
+            elements.saveColors.addEventListener('click', saveSiteColors);
+        }
+
+        // ===== FUNÇÕES DE UI =====
+        function toggleMenu() {
+            elements.sideMenu.classList.toggle('active');
+            elements.overlay.classList.toggle('active');
+        }
+
+        function toggleCart() {
+            elements.cartSidebar.classList.toggle('active');
+            elements.overlay.classList.toggle('active');
+        }
+
+        function closeAllModals() {
+            elements.sideMenu.classList.remove('active');
+            elements.cartSidebar.classList.remove('active');
+            elements.productModal.classList.remove('active');
+            elements.checkoutModal.classList.remove('active');
+            elements.overlay.classList.remove('active');
+        }
+
+        function goToHome() {
+            window.scrollTo(0, 0);
+            filterProducts('all');
+        }
+
+        function openProductModal(product) {
+            currentProduct = product;
+            currentImageIndex = 0;
+            
+            elements.modalProductName.textContent = product.name;
+            elements.modalProductPrice.textContent = `R$ ${product.price.toFixed(2)}`;
+            
+            elements.carouselImages.innerHTML = '';
+            product.images.forEach((image, index) => {
+                const img = document.createElement('img');
+                img.src = image;
+                img.alt = product.name;
+                img.className = 'carousel-image';
+                if (index === 0) img.style.display = 'block';
+                elements.carouselImages.appendChild(img);
+            });
+            
+            elements.colorOptions.innerHTML = '';
+            product.colors.forEach(color => {
+                const colorOption = document.createElement('div');
+                colorOption.className = 'color-option';
+                colorOption.innerHTML = `
+                    <div class="color-name">
+                        <div class="color-swatch" style="background-color: ${color.hex}"></div>
+                        <span>${color.name} (Estoque: ${color.stock})</span>
+                    </div>
+                    <input type="number" class="quantity-input" min="0" max="${color.stock}" value="0" data-color="${color.name}">
+                `;
+                elements.colorOptions.appendChild(colorOption);
+            });
+            
+            elements.productModal.classList.add('active');
+            elements.overlay.classList.add('active');
+        }
+
+        function closeProductModal() {
+            elements.productModal.classList.remove('active');
+            elements.overlay.classList.remove('active');
+        }
+
+        function showPrevImage() {
+            if (currentImageIndex > 0) {
+                currentImageIndex--;
+                updateCarousel();
+            }
+        }
+
+        function showNextImage() {
+            if (currentImageIndex < currentProduct.images.length - 1) {
+                currentImageIndex++;
+                updateCarousel();
+            }
+        }
+
+        function updateCarousel() {
+            const images = document.querySelectorAll('.carousel-image');
+            images.forEach((img, index) => {
+                img.style.display = index === currentImageIndex ? 'block' : 'none';
+            });
+        }
+
+        function openCheckout() {
+            if (cart.length === 0) {
+                alert('Seu carrinho está vazio!');
+                return;
+            }
+            
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            
+            if (totalItems < 10) {
+                alert(`Pedido mínimo de 10 peças. Seu pedido atual tem ${totalItems} peças.`);
+                return;
+            }
+            
+            elements.orderSummary.innerHTML = '';
+            cart.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'order-item';
+                itemElement.innerHTML = `
+                    <p>${item.name} - ${item.color} (${item.quantity}x) - R$ ${(item.price * item.quantity).toFixed(2)}</p>
+                `;
+                elements.orderSummary.appendChild(itemElement);
+            });
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const totalElement = document.createElement('div');
+            totalElement.className = 'order-total';
+            totalElement.innerHTML = `<p><strong>Total: R$ ${total.toFixed(2)}</strong></p>`;
+            elements.orderSummary.appendChild(totalElement);
+            
+            elements.checkoutModal.classList.add('active');
+            elements.overlay.classList.add('active');
+        }
+
+        function closeCheckout() {
+            elements.checkoutModal.classList.remove('active');
+            elements.overlay.classList.remove('active');
+        }
+
+        // ===== FUNÇÕES DO CARRINHO =====
+        function addToCartFromModal() {
+            const colorInputs = document.querySelectorAll('.quantity-input');
+            let addedItems = false;
+            
+            colorInputs.forEach(input => {
+                const quantity = parseInt(input.value);
+                const colorName = input.getAttribute('data-color');
+                
+                if (quantity > 0) {
+                    const color = currentProduct.colors.find(c => c.name === colorName);
+                    
+                    if (color && quantity <= color.stock) {
+                        const cartItem = {
+                            id: currentProduct.id,
+                            name: currentProduct.name,
+                            price: currentProduct.price,
+                            color: colorName,
+                            quantity: quantity,
+                            image: currentProduct.images[0]
+                        };
+                        
+                        const existingItemIndex = cart.findIndex(item => 
+                            item.id === cartItem.id && item.color === cartItem.color
+                        );
+                        
+                        if (existingItemIndex !== -1) {
+                            cart[existingItemIndex].quantity += quantity;
+                        } else {
+                            cart.push(cartItem);
+                        }
+                        
+                        addedItems = true;
+                    } else {
+                        alert(`Quantidade solicitada para ${colorName} excede o estoque disponível.`);
+                    }
+                }
+            });
+            
+            if (addedItems) {
+                saveCart();
+                updateCartUI();
+                closeProductModal();
+                alert('Itens adicionados ao carrinho!');
+            } else {
+                alert('Selecione pelo menos uma cor e quantidade para adicionar ao carrinho.');
+            }
+        }
+
+        function updateCartUI() {
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            elements.cartCount.textContent = totalItems;
+            
+            elements.cartItems.innerHTML = '';
+            
+            if (cart.length === 0) {
+                elements.cartItems.innerHTML = '<p>Seu carrinho está vazio.</p>';
+                elements.cartTotal.textContent = '0,00';
+                return;
+            }
+            
+            let total = 0;
+            
+            cart.forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+                itemElement.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                    <div class="cart-item-details">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-color">Cor: ${item.color}</div>
+                        <div class="cart-item-quantity">
+                            <button class="quantity-btn minus" data-index="${index}">-</button>
+                            <span>${item.quantity}</span>
+                            <button class="quantity-btn plus" data-index="${index}">+</button>
+                        </div>
+                    </div>
+                    <div class="remove-item" data-index="${index}">✕</div>
+                `;
+                
+                elements.cartItems.appendChild(itemElement);
+                total += item.price * item.quantity;
+            });
+            
+            elements.cartTotal.textContent = total.toFixed(2);
+            
+            document.querySelectorAll('.quantity-btn.minus').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    if (cart[index].quantity > 1) {
+                        cart[index].quantity--;
+                    } else {
+                        cart.splice(index, 1);
+                    }
+                    saveCart();
+                    updateCartUI();
+                });
+            });
+            
+            document.querySelectorAll('.quantity-btn.plus').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    const product = products.find(p => p.id === cart[index].id);
+                    if (product) {
+                        const color = product.colors.find(c => c.name === cart[index].color);
+                        if (color && cart[index].quantity < color.stock) {
+                            cart[index].quantity++;
+                            saveCart();
+                            updateCartUI();
+                        } else {
+                            alert('Quantidade máxima em estoque atingida para esta cor.');
+                        }
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.remove-item').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    cart.splice(index, 1);
+                    saveCart();
+                    updateCartUI();
+                });
+            });
+        }
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        // ===== FINALIZAÇÃO DO PEDIDO =====
+        function sendOrderViaWhatsApp() {
+            if (!elements.checkoutForm.checkValidity()) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            
+            let message = `Olá! Gostaria de fazer um pedido:\n\n`;
+            
+            cart.forEach(item => {
+                message += `• ${item.name} - ${item.color} (${item.quantity}x) - R$ ${(item.price * item.quantity).toFixed(2)}\n`;
+            });
+            
+            message += `\nTotal: R$ ${total.toFixed(2)} (${totalItems} peças)\n\n`;
+            message += `Dados do cliente:\n`;
+            message += `Nome: ${document.getElementById('customer-name').value}\n`;
+            message += `CEP: ${document.getElementById('customer-cep').value}\n`;
+            message += `Endereço: ${document.getElementById('customer-address').value}\n`;
+            message += `Tipo de entrega: ${document.getElementById('delivery-type').value}\n`;
+            message += `Telefone: ${document.getElementById('customer-phone').value}\n`;
+            message += `Forma de pagamento: PIX`;
+            
+            const encodedMessage = encodeURIComponent(message);
+            const phoneNumber = "5511999999999"; // ALTERE PARA SEU NÚMERO
+            
+            window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+            
+            cart = [];
+            saveCart();
+            updateCartUI();
+            closeCheckout();
+            
+            alert('Pedido enviado via WhatsApp! Em breve entraremos em contato.');
+        }
+
+        // ===== CATÁLOGO DE PRODUTOS =====
+        function loadProducts() {
+            db.collection('products').get()
+                .then(snapshot => {
+                    products = [];
+                    snapshot.forEach(doc => {
+                        const product = doc.data();
+                        product.id = doc.id;
+                        products.push(product);
+                    });
+                    displayProducts(products);
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar produtos:', error);
+                });
+        }
+
+        function displayProducts(productsToShow) {
+            elements.productsGrid.innerHTML = '';
+            
+            if (productsToShow.length === 0) {
+                elements.productsGrid.innerHTML = '<p>Nenhum produto encontrado.</p>';
+                return;
+            }
+            
+            productsToShow.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <img src="${product.images[0]}" alt="${product.name}" class="product-image">
+                    <div class="thumbnails">
+                        ${product.images.slice(0, 3).map((image, index) => 
+                            `<img src="${image}" alt="${product.name}" class="thumbnail ${index === 0 ? 'active' : ''}" data-index="${index}">`
+                        ).join('')}
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-price">R$ ${product.price.toFixed(2)}</p>
+                        <button class="buy-btn" data-id="${product.id}">Comprar</button>
+                    </div>
+                `;
+                
+                elements.productsGrid.appendChild(productCard);
+                
+                const thumbnails = productCard.querySelectorAll('.thumbnail');
+                const mainImage = productCard.querySelector('.product-image');
+                
+                thumbnails.forEach(thumbnail => {
+                    thumbnail.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        mainImage.src = product.images[index];
+                        thumbnails.forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+                
+                const buyBtn = productCard.querySelector('.buy-btn');
+                buyBtn.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-id');
+                    const product = products.find(p => p.id === productId);
+                    if (product) {
+                        openProductModal(product);
+                    }
+                });
+            });
+        }
+
+        function filterProducts(category) {
+            if (category === 'all') {
+                displayProducts(products);
+            } else {
+                const filteredProducts = products.filter(product => product.category === category);
+                displayProducts(filteredProducts);
+            }
+        }
+
+        // ===== ÁREA ADMINISTRATIVA =====
+        function checkAdminAuth() {
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    currentUser = user;
+                    showAdminPanel();
+                } else {
+                    showAdminLogin();
+                }
+            });
+        }
+
+        function showAdminLogin() {
+            elements.adminLogin.style.display = 'block';
+            elements.adminArea.style.display = 'none';
+        }
+
+        function showAdminPanel() {
+            elements.adminLogin.style.display = 'none';
+            elements.adminArea.style.display = 'block';
+            loadExistingProducts();
+            loadInventory();
+        }
+
+        function adminLogin() {
+            const email = elements.adminEmail.value;
+            const password = elements.adminPassword.value;
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    currentUser = userCredential.user;
+                    showAdminPanel();
+                })
+                .catch(error => {
+                    alert('Erro no login: ' + error.message);
+                });
+        }
+
+        function switchAdminTab(tabName) {
+            elements.adminTabs.forEach(tab => {
+                if (tab.getAttribute('data-tab') === tabName) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            elements.adminSections.forEach(section => {
+                if (section.id === `${tabName}-section`) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+        }
+
+        function addColorField() {
+            const colorField = document.createElement('div');
+            colorField.className = 'color-field';
+            colorField.innerHTML = `
+                <div class="form-group">
+                    <input type="text" placeholder="Nome da cor" class="color-name-input">
+                    <input type="color" class="color-hex-input">
+                    <input type="number" placeholder="Estoque" min="0" class="color-stock-input">
+                    <button type="button" class="remove-color">Remover</button>
+                </div>
+            `;
+            
+            elements.colorFields.appendChild(colorField);
+            
+            colorField.querySelector('.remove-color').addEventListener('click', function() {
+                colorField.remove();
+            });
+        }
+
+        function saveProduct() {
+            const name = elements.productName.value;
+            const price = parseFloat(elements.productPrice.value);
+            const category = elements.productCategory.value;
+            const images = elements.productImages.value.split(',').map(url => url.trim());
+            
+            const colors = [];
+            const colorFields = elements.colorFields.querySelectorAll('.color-field');
+            
+            colorFields.forEach(field => {
+                const nameInput = field.querySelector('.color-name-input');
+                const hexInput = field.querySelector('.color-hex-input');
+                const stockInput = field.querySelector('.color-stock-input');
+                
+                if (nameInput.value && hexInput.value && stockInput.value) {
+                    colors.push({
+                        name: nameInput.value,
+                        hex: hexInput.value,
+                        stock: parseInt(stockInput.value)
+                    });
+                }
+            });
+            
+            if (!name || !price || !category || images.length === 0 || colors.length === 0) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+            
+            db.collection('products').add({
+                name: name,
+                price: price,
+                category: category,
+                images: images,
+                colors: colors,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                alert('Produto salvo com sucesso!');
+                elements.productName.value = '';
+                elements.productPrice.value = '';
+                elements.productImages.value = '';
+                elements.colorFields.innerHTML = '';
+                loadProducts();
+                loadExistingProducts();
+            })
+            .catch(error => {
+                alert('Erro ao salvar produto: ' + error.message);
+            });
+        }
+
+        function loadExistingProducts() {
+            db.collection('products').get()
+                .then(snapshot => {
+                    elements.existingProducts.innerHTML = '<h4>Produtos Cadastrados</h4>';
+                    
+                    if (snapshot.empty) {
+                        elements.existingProducts.innerHTML += '<p>Nenhum produto cadastrado.</p>';
+                        return;
+                    }
+                    
+                    snapshot.forEach(doc => {
+                        const product = doc.data();
+                        const productElement = document.createElement('div');
+                        productElement.className = 'existing-product';
+                        productElement.innerHTML = `
+                            <p><strong>${product.name}</strong> - R$ ${product.price.toFixed(2)}</p>
+                            <button class="delete-product" data-id="${doc.id}">Excluir</button>
+                        `;
+                        
+                        elements.existingProducts.appendChild(productElement);
+                        
+                        productElement.querySelector('.delete-product').addEventListener('click', function() {
+                            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                                db.collection('products').doc(doc.id).delete()
+                                    .then(() => {
+                                        alert('Produto excluído com sucesso!');
+                                        loadExistingProducts();
+                                        loadProducts();
+                                    })
+                                    .catch(error => {
+                                        alert('Erro ao excluir produto: ' + error.message);
+                                    });
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar produtos existentes:', error);
+                });
+        }
+
+        function loadInventory() {
+            db.collection('products').get()
+                .then(snapshot => {
+                    elements.inventoryTableBody.innerHTML = '';
+                    
+                    snapshot.forEach(doc => {
+                        const product = doc.data();
+                        product.id = doc.id;
+                        
+                        product.colors.forEach(color => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${product.name}</td>
+                                <td>${color.name}</td>
+                                <td>
+                                    <input type="number" value="${color.stock}" min="0" class="stock-input" data-product="${product.id}" data-color="${color.name}">
+                                </td>
+                                <td>
+                                    <button class="save-stock" data-product="${product.id}" data-color="${color.name}">Salvar</button>
+                                </td>
+                            `;
+                            
+                            elements.inventoryTableBody.appendChild(row);
+                            
+                            row.querySelector('.save-stock').addEventListener('click', function() {
+                                const newStock = parseInt(row.querySelector('.stock-input').value);
+                                updateStock(product.id, color.name, newStock);
+                            });
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar inventário:', error);
+                });
+        }
+
+        function updateStock(productId, colorName, newStock) {
+            db.collection('products').doc(productId).get()
+                .then(doc => {
+                    if (doc.exists) {
+                        const product = doc.data();
+                        const updatedColors = product.colors.map(color => {
+                            if (color.name === colorName) {
+                                return { ...color, stock: newStock };
+                            }
+                            return color;
+                        });
+                        
+                        return db.collection('products').doc(productId).update({
+                            colors: updatedColors
+                        });
+                    }
+                })
+                .then(() => {
+                    alert('Estoque atualizado com sucesso!');
+                    loadProducts();
+                    loadInventory();
+                })
+                .catch(error => {
+                    alert('Erro ao atualizar estoque: ' + error.message);
+                });
+        }
+
+        function loadSiteSettings() {
+            db.collection('settings').doc('site').get()
+                .then(doc => {
+                    if (doc.exists) {
+                        const settings = doc.data();
+                        if (settings.logo) {
+                            elements.siteLogo.src = settings.logo;
+                            elements.siteLogoUrl.value = settings.logo;
+                        }
+                        if (settings.primaryColor) {
+                            document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
+                            elements.primaryColor.value = settings.primaryColor;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar configurações:', error);
+                });
+        }
+
+        function saveSiteLogo() {
+            const logoUrl = elements.siteLogoUrl.value;
+            
+            if (!logoUrl) {
+                alert('Por favor, insira uma URL para a logo.');
+                return;
+            }
+            
+            db.collection('settings').doc('site').set({
+                logo: logoUrl
+            }, { merge: true })
+            .then(() => {
+                elements.siteLogo.src = logoUrl;
+                alert('Logo salva com sucesso!');
+            })
+            .catch(error => {
+                alert('Erro ao salvar logo: ' + error.message);
+            });
+        }
+
+        function saveSiteColors() {
+            const primaryColor = elements.primaryColor.value;
+            
+            db.collection('settings').doc('site').set({
+                primaryColor: primaryColor
+            }, { merge: true })
+            .then(() => {
+                document.documentElement.style.setProperty('--primary-color', primaryColor);
+                alert('Cores salvas com sucesso!');
+            })
+            .catch(error => {
+                alert('Erro ao salvar cores: ' + error.message);
+            });
+        }
+    </script>
+</body>
+</html>
