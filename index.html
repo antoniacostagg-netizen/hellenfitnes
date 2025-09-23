@@ -1037,6 +1037,22 @@
             .cart-modal {
                 max-width: 100%;
             }
+            .admin-access .fa-cog {
+                    font-size: 1.2rem;
+                    color: #666;
+                    transition: color 0.3s;
+                }
+                
+                .admin-access .fa-cog:hover {
+                    color: var(--primary-color);
+                }
+
+                .admin-access {
+                    position: fixed;
+                    bottom: 20px;
+                    left: 20px;
+                    z-index: 98;
+                }
         }
     </style>
 </head>
@@ -1132,7 +1148,9 @@
             
             <!-- Link para área administrativa (discreto) -->
             <div class="admin-access">
-                <a href="#" class="admin-link" id="admin-access-link">Acesso administrativo</a>
+                <a href="#" class="admin-link" id="admin-access-link" title="Acesso administrativo">
+                    <i class="fas fa-dice"></i>
+                </a>
             </div>
         </div>
     </footer>
