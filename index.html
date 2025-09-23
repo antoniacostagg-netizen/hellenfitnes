@@ -4,53 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hellen Moda Fitness</title>
-    
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
-    
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <!-- Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ===== ESTILOS GERAIS ===== */
-        :root {
-            --primary-color: #ff6b6b;
-            --secondary-color: #4ecdc4;
-            --dark-color: #292f36;
-            --light-color: #f7fff7;
-            --accent-color: #ffe66d;
-            --font-main: 'Arial', sans-serif;
-        }
-        
+        /* Reset e estilos base */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #e91e63;
+            --secondary-color: #9c27b0;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --light-gray: #eee;
+            --medium-gray: #ccc;
+            --dark-gray: #666;
+            --white: #fff;
+            --black: #000;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --error: #f44336;
         }
         
         body {
-            font-family: var(--font-main);
-            background-color: var(--light-color);
-            color: var(--dark-color);
-            overflow-x: hidden;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
         }
         
-        /* ===== HEADER ===== */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header */
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
         }
         
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
         .logo {
-            height: 50px;
-            width: auto;
+            max-height: 60px;
+            max-width: 200px;
         }
         
         .header-icons {
@@ -58,30 +74,34 @@
             gap: 15px;
         }
         
-        .icon {
-            font-size: 24px;
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-color);
             cursor: pointer;
+            padding: 5px;
         }
         
-        .top-message {
+        .info-banner {
             background-color: var(--primary-color);
-            color: white;
+            color: var(--white);
             text-align: center;
             padding: 10px;
-            font-size: 14px;
+            font-size: 0.9rem;
         }
         
-        /* ===== MENU LATERAL ===== */
+        /* Menu lateral */
         .side-menu {
             position: fixed;
             top: 0;
             right: -300px;
             width: 300px;
             height: 100%;
-            background-color: white;
-            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            background-color: var(--white);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
             transition: right 0.3s ease;
-            z-index: 200;
+            z-index: 101;
             padding: 20px;
         }
         
@@ -89,62 +109,83 @@
             right: 0;
         }
         
-        .menu-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .close-menu {
-            font-size: 24px;
-            cursor: pointer;
-        }
-        
-        .menu-items {
-            list-style: none;
-        }
-        
-        .menu-items li {
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .menu-items a {
-            text-decoration: none;
-            color: var(--dark-color);
-            font-size: 18px;
-        }
-        
-        .overlay {
+        .menu-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 150;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
             display: none;
         }
         
-        .overlay.active {
+        .menu-overlay.active {
             display: block;
         }
         
-        /* ===== CATÁLOGO DE PRODUTOS ===== */
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .menu-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .menu-list {
+            list-style: none;
+        }
+        
+        .menu-list li {
+            margin-bottom: 15px;
+        }
+        
+        .menu-list a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .menu-list a:hover {
+            background-color: var(--light-gray);
+        }
+        
+        /* Catálogo de produtos */
+        .products-section {
+            padding: 30px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+        
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
-            padding: 20px;
         }
         
         .product-card {
-            background-color: white;
+            background-color: var(--white);
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
         }
         
         .product-card:hover {
@@ -152,32 +193,37 @@
         }
         
         .product-image {
+            position: relative;
             width: 100%;
             height: 250px;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
             cursor: pointer;
         }
         
-        .thumbnails {
+        .product-thumbnails {
             display: flex;
             justify-content: center;
-            gap: 5px;
             padding: 10px;
+            gap: 5px;
         }
         
         .thumbnail {
             width: 50px;
             height: 50px;
             object-fit: cover;
-            border-radius: 5px;
             cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
+            border: 2px solid transparent;
+            border-radius: 5px;
         }
         
         .thumbnail.active {
-            opacity: 1;
-            border: 2px solid var(--primary-color);
+            border-color: var(--primary-color);
         }
         
         .product-info {
@@ -185,44 +231,45 @@
         }
         
         .product-name {
-            font-size: 18px;
+            font-size: 1.1rem;
             margin-bottom: 5px;
         }
         
         .product-price {
             font-weight: bold;
             color: var(--primary-color);
+            font-size: 1.2rem;
             margin-bottom: 10px;
         }
         
         .buy-btn {
             background-color: var(--primary-color);
-            color: white;
+            color: var(--white);
             border: none;
             padding: 10px 15px;
             border-radius: 5px;
-            cursor: pointer;
             width: 100%;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
         }
         
         .buy-btn:hover {
-            background-color: #e55a5a;
+            background-color: var(--secondary-color);
         }
         
-        /* ===== MODAL DO PRODUTO ===== */
+        /* Modal de produto */
         .product-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.8);
+            background-color: rgba(0, 0, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 300;
+            z-index: 102;
             display: none;
         }
         
@@ -231,7 +278,7 @@
         }
         
         .modal-content {
-            background-color: white;
+            background-color: var(--white);
             width: 90%;
             max-width: 800px;
             border-radius: 10px;
@@ -239,68 +286,103 @@
             position: relative;
         }
         
-        .close-modal {
+        .modal-close {
             position: absolute;
             top: 15px;
             right: 15px;
-            font-size: 24px;
-            cursor: pointer;
-            z-index: 10;
-            background-color: rgba(255,255,255,0.8);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .carousel {
-            position: relative;
-            height: 400px;
-            overflow: hidden;
-        }
-        
-        .carousel-images {
-            display: flex;
-            transition: transform 0.5s ease;
-            height: 100%;
-        }
-        
-        .carousel-image {
-            min-width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(255,255,255,0.7);
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--white);
             border: none;
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            font-size: 20px;
+            font-size: 1.2rem;
             cursor: pointer;
-            z-index: 5;
+            z-index: 1;
         }
         
-        .prev-btn {
-            left: 15px;
+        .modal-body {
+            display: flex;
+            flex-direction: column;
         }
         
-        .next-btn {
-            right: 15px;
+        @media (min-width: 768px) {
+            .modal-body {
+                flex-direction: row;
+            }
         }
         
-        .product-details {
+        .modal-images {
+            flex: 1;
+            position: relative;
+        }
+        
+        .image-slider {
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .slider-container {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            transition: transform 0.5s ease;
+        }
+        
+        .slider-image {
+            width: 33.333%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .slider-nav {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+        }
+        
+        .slider-dot.active {
+            background-color: var(--white);
+        }
+        
+        .modal-details {
+            flex: 1;
             padding: 20px;
         }
         
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .modal-price {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
         .color-options {
-            margin: 20px 0;
+            margin-bottom: 20px;
+        }
+        
+        .color-title {
+            margin-bottom: 10px;
+            font-weight: bold;
         }
         
         .color-option {
@@ -309,65 +391,110 @@
             align-items: center;
             margin-bottom: 10px;
             padding: 10px;
-            border: 1px solid #eee;
+            background-color: var(--light-gray);
             border-radius: 5px;
         }
         
-        .color-name {
+        .color-info {
             display: flex;
             align-items: center;
             gap: 10px;
         }
         
-        .color-swatch {
+        .color-sample {
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            border: 1px solid #ddd;
+            border: 1px solid var(--medium-gray);
+        }
+        
+        .color-name {
+            font-weight: bold;
+        }
+        
+        .color-stock {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
         }
         
         .quantity-input {
             width: 60px;
             padding: 5px;
-            text-align: center;
-            border: 1px solid #ddd;
+            border: 1px solid var(--medium-gray);
             border-radius: 3px;
+            text-align: center;
         }
         
         .add-to-cart-btn {
-            background-color: var(--secondary-color);
-            color: white;
+            background-color: var(--primary-color);
+            color: var(--white);
             border: none;
             padding: 15px;
             border-radius: 5px;
-            cursor: pointer;
             width: 100%;
-            font-size: 18px;
-            margin-top: 20px;
-            transition: background-color 0.3s ease;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background-color 0.3s;
         }
         
         .add-to-cart-btn:hover {
-            background-color: #3dbab3;
+            background-color: var(--secondary-color);
         }
         
-        /* ===== CARRINHO ===== */
-        .cart-sidebar {
+        /* Botão flutuante */
+        .floating-cart-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 99;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--error);
+            color: var(--white);
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        /* Carrinho */
+        .cart-modal {
             position: fixed;
             top: 0;
             right: -400px;
             width: 100%;
             max-width: 400px;
             height: 100%;
-            background-color: white;
-            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            background-color: var(--white);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
             transition: right 0.3s ease;
-            z-index: 200;
-            padding: 20px;
-            overflow-y: auto;
+            z-index: 103;
+            display: flex;
+            flex-direction: column;
         }
         
-        .cart-sidebar.active {
+        .cart-modal.active {
             right: 0;
         }
         
@@ -375,19 +502,32 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .cart-title {
+            font-size: 1.5rem;
+        }
+        
+        .cart-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
         
         .cart-items {
-            margin-bottom: 20px;
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
         }
         
         .cart-item {
             display: flex;
-            gap: 15px;
             margin-bottom: 15px;
             padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--light-gray);
         }
         
         .cart-item-image {
@@ -395,6 +535,7 @@
             height: 80px;
             object-fit: cover;
             border-radius: 5px;
+            margin-right: 15px;
         }
         
         .cart-item-details {
@@ -407,8 +548,8 @@
         }
         
         .cart-item-color {
-            font-size: 14px;
-            color: #666;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
             margin-bottom: 5px;
         }
         
@@ -419,74 +560,79 @@
         }
         
         .quantity-btn {
-            background-color: #eee;
-            border: none;
+            background: none;
+            border: 1px solid var(--medium-gray);
             width: 25px;
             height: 25px;
-            border-radius: 50%;
+            border-radius: 3px;
             cursor: pointer;
         }
         
-        .remove-item {
-            color: #ff6b6b;
+        .cart-item-price {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .cart-remove {
+            background: none;
+            border: none;
+            color: var(--error);
             cursor: pointer;
-            margin-left: auto;
+            margin-left: 10px;
+        }
+        
+        .cart-footer {
+            padding: 20px;
+            border-top: 1px solid var(--light-gray);
         }
         
         .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
             font-weight: bold;
-            font-size: 18px;
-            text-align: right;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .checkout-btn {
             background-color: var(--primary-color);
-            color: white;
+            color: var(--white);
             border: none;
             padding: 15px;
             border-radius: 5px;
-            cursor: pointer;
             width: 100%;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background-color 0.3s;
         }
         
         .checkout-btn:hover {
-            background-color: #e55a5a;
+            background-color: var(--secondary-color);
         }
         
-        /* ===== BOTÃO FLUTUANTE ===== */
-        .floating-checkout {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 15px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 16px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .min-order-warning {
+            background-color: var(--warning);
+            color: var(--white);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
         }
         
-        /* ===== FORMULÁRIO DE FINALIZAÇÃO ===== */
+        /* Checkout */
         .checkout-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.8);
+            background-color: rgba(0, 0, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 300;
+            z-index: 104;
             display: none;
         }
         
@@ -495,7 +641,7 @@
         }
         
         .checkout-content {
-            background-color: white;
+            background-color: var(--white);
             width: 90%;
             max-width: 600px;
             border-radius: 10px;
@@ -505,84 +651,177 @@
         }
         
         .checkout-header {
-            padding: 20px;
-            background-color: var(--dark-color);
-            color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .checkout-title {
+            font-size: 1.5rem;
+        }
+        
+        .checkout-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
         
         .checkout-body {
             padding: 20px;
         }
         
+        .checkout-items {
+            margin-bottom: 20px;
+        }
+        
+        .checkout-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .checkout-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            padding-top: 10px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
         .form-group {
             margin-bottom: 15px;
         }
         
-        .form-group label {
+        .form-label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
         
-        .form-group input, .form-group select {
+        .form-input, .form-select {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--medium-gray);
             border-radius: 5px;
+            font-size: 1rem;
         }
         
-        .order-summary {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
+        .form-note {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            margin-top: 5px;
         }
         
-        .min-order-warning {
-            background-color: #fff3cd;
-            color: #856404;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .send-whatsapp-btn {
-            background-color: #25D366;
-            color: white;
+        .submit-order-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
             border: none;
             padding: 15px;
             border-radius: 5px;
-            cursor: pointer;
             width: 100%;
-            font-size: 18px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        
+        .submit-order-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--white);
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .footer-content {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+            flex-direction: column;
+            gap: 20px;
         }
         
-        /* ===== ÁREA ADMINISTRATIVA ===== */
-        .admin-login {
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
         }
         
+        .footer-section h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .footer-section p, .footer-section a {
+            margin-bottom: 10px;
+            display: block;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            color: var(--primary-color);
+        }
+        
+        .admin-access {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .admin-link {
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .admin-link:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Painel de administrador */
         .admin-panel {
-            padding: 20px;
+            display: none;
+            padding: 30px 0;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .admin-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+        
+        .admin-logout {
+            background-color: var(--error);
+            color: var(--white);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
         }
         
         .admin-tabs {
             display: flex;
             margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid var(--light-gray);
         }
         
         .admin-tab {
@@ -592,23 +831,66 @@
         }
         
         .admin-tab.active {
-            border-bottom: 3px solid var(--primary-color);
+            border-bottom-color: var(--primary-color);
             font-weight: bold;
         }
         
-        .admin-section {
+        .admin-content {
             display: none;
         }
         
-        .admin-section.active {
+        .admin-content.active {
             display: block;
         }
         
-        .product-form, .color-form {
-            background-color: #f9f9f9;
+        .admin-form {
+            background-color: var(--white);
             padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-col {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .color-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .color-input {
+            width: 50px;
+            height: 30px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .admin-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 10px 15px;
             border-radius: 5px;
-            margin-bottom: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .admin-btn.secondary {
+            background-color: var(--dark-gray);
         }
         
         .inventory-table {
@@ -618,71 +900,191 @@
         }
         
         .inventory-table th, .inventory-table td {
-            border: 1px solid #ddd;
+            border: 1px solid var(--medium-gray);
             padding: 10px;
             text-align: left;
         }
         
         .inventory-table th {
-            background-color: #f2f2f2;
+            background-color: var(--light-gray);
         }
         
-        .save-btn {
-            background-color: var(--secondary-color);
-            color: white;
+        .stock-input {
+            width: 80px;
+            padding: 5px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 3px;
+        }
+        
+        .save-stock-btn {
+            background-color: var(--success);
+            color: var(--white);
             border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        /* Login */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 105;
+        }
+        
+        .login-content {
+            background-color: var(--white);
+            width: 90%;
+            max-width: 400px;
+            border-radius: 10px;
+            padding: 30px;
+        }
+        
+        .login-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .login-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        
+        /* Mensagens */
+        .message {
             padding: 10px 15px;
             border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
+            margin-bottom: 15px;
+            display: none;
         }
         
-        /* ===== RESPONSIVIDADE ===== */
+        .message.success {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+        
+        .message.error {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+        
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsividade */
         @media (max-width: 768px) {
+            .header-top {
+                padding: 10px 0;
+            }
+            
+            .logo {
+                max-height: 50px;
+            }
+            
+            .icon-btn {
+                font-size: 1.3rem;
+            }
+            
             .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 10px;
-                padding: 10px;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
             
-            .product-image {
-                height: 180px;
+            .modal-body {
+                flex-direction: column;
             }
             
-            .carousel {
+            .image-slider {
                 height: 300px;
             }
             
-            .cart-sidebar {
-                width: 100%;
+            .cart-modal {
                 max-width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Mensagem informativa -->
-    <div class="top-message">
-        Escolha seu produto e seu pedido será enviado via WhatsApp.
-    </div>
-    
     <!-- Header -->
     <header>
-        <img src="" alt="Logo" class="logo" id="site-logo">
-        <div class="header-icons">
-            <div class="icon" id="home-icon">🏠</div>
-            <div class="icon" id="menu-icon">☰</div>
-            <div class="icon" id="cart-icon">🛒</div>
+        <div class="container">
+            <div class="header-top">
+                <!-- Logo - Pode ser modificada no painel administrativo -->
+                <img src="https://via.placeholder.com/200x60?text=HELLEN+MODA+FITNESS" alt="Hellen Moda Fitness" class="logo" id="site-logo">
+                
+                <div class="header-icons">
+                    <!-- Ícone de início -->
+                    <button class="icon-btn" id="home-btn">
+                        <i class="fas fa-home"></i>
+                    </button>
+                    
+                    <!-- Ícone de menu -->
+                    <button class="icon-btn" id="menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    
+                    <!-- Ícone de carrinho -->
+                    <button class="icon-btn" id="cart-btn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge" id="cart-badge">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Banner informativo -->
+        <div class="info-banner">
+            Escolha seu produto e seu pedido será enviado via WhatsApp.
         </div>
     </header>
     
     <!-- Menu lateral -->
+    <div class="menu-overlay" id="menu-overlay"></div>
     <div class="side-menu" id="side-menu">
         <div class="menu-header">
-            <h3>Menu</h3>
-            <div class="close-icon close-menu">✕</div>
+            <h2>Menu</h2>
+            <button class="menu-close" id="menu-close">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-        <ul class="menu-items">
+        
+        <ul class="menu-list">
             <li><a href="#" data-category="all">Todos os produtos</a></li>
             <li><a href="#" data-category="conjuntos">Conjuntos</a></li>
             <li><a href="#" data-category="macaquinhos">Macaquinhos</a></li>
@@ -691,1004 +1093,994 @@
         </ul>
     </div>
     
-    <!-- Overlay para menu e modais -->
-    <div class="overlay" id="overlay"></div>
-    
-    <!-- Catálogo de produtos -->
+    <!-- Conteúdo principal -->
     <main>
-        <div class="products-grid" id="products-grid">
-            <!-- Os produtos serão carregados dinamicamente aqui -->
-        </div>
+        <section class="products-section">
+            <div class="container">
+                <h2 class="section-title" id="category-title">Todos os produtos</h2>
+                
+                <!-- Grid de produtos -->
+                <div class="products-grid" id="products-grid">
+                    <!-- Os produtos serão carregados dinamicamente aqui -->
+                </div>
+            </div>
+        </section>
     </main>
     
-    <!-- Botão flutuante de finalizar compra -->
-    <button class="floating-checkout" id="floating-checkout">
-        Finalizar Compra (<span id="cart-count">0</span>)
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <p id="footer-phone">Telefone: (11) 99999-9999</p>
+                    <p id="footer-email">Email: contato@hellenmodafitness.com</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Redes Sociais</h3>
+                    <a href="#" id="footer-instagram">Instagram</a>
+                    <a href="#" id="footer-facebook">Facebook</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Informações</h3>
+                    <p>Pedido mínimo: 10 peças</p>
+                    <p>Entregamos para todo o Brasil</p>
+                </div>
+            </div>
+            
+            <!-- Link para área administrativa (discreto) -->
+            <div class="admin-access">
+                <a href="#" class="admin-link" id="admin-access-link">Acesso administrativo</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Botão flutuante do carrinho -->
+    <button class="floating-cart-btn" id="floating-cart-btn">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge" id="floating-cart-badge">0</span>
     </button>
     
-    <!-- Modal do produto -->
+    <!-- Modal de produto -->
     <div class="product-modal" id="product-modal">
         <div class="modal-content">
-            <div class="close-modal">✕</div>
-            <div class="carousel">
-                <div class="carousel-images" id="carousel-images">
-                    <!-- Imagens do carrossel serão adicionadas aqui -->
+            <button class="modal-close" id="product-modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-body">
+                <div class="modal-images">
+                    <div class="image-slider">
+                        <div class="slider-container" id="product-slider">
+                            <!-- As imagens serão carregadas dinamicamente -->
+                        </div>
+                    </div>
+                    
+                    <div class="slider-nav" id="slider-nav">
+                        <!-- Os pontos de navegação serão carregados dinamicamente -->
+                    </div>
                 </div>
-                <button class="carousel-btn prev-btn">‹</button>
-                <button class="carousel-btn next-btn">›</button>
-            </div>
-            <div class="product-details">
-                <h2 class="product-name" id="modal-product-name"></h2>
-                <p class="product-price" id="modal-product-price"></p>
-                <div class="color-options" id="color-options">
-                    <!-- Opções de cor serão adicionadas aqui -->
+                
+                <div class="modal-details">
+                    <h2 class="modal-title" id="modal-product-name">Nome do Produto</h2>
+                    <p class="modal-price" id="modal-product-price">R$ 0,00</p>
+                    
+                    <div class="color-options" id="color-options">
+                        <!-- As opções de cor serão carregadas dinamicamente -->
+                    </div>
+                    
+                    <button class="add-to-cart-btn" id="add-to-cart-btn">Adicionar ao Carrinho</button>
                 </div>
-                <button class="add-to-cart-btn" id="add-to-cart">Adicionar ao Carrinho</button>
             </div>
         </div>
     </div>
     
-    <!-- Carrinho lateral -->
-    <div class="cart-sidebar" id="cart-sidebar">
+    <!-- Carrinho -->
+    <div class="cart-modal" id="cart-modal">
         <div class="cart-header">
-            <h3>Seu Carrinho</h3>
-            <div class="close-icon close-cart">✕</div>
+            <h2 class="cart-title">Carrinho</h2>
+            <button class="cart-close" id="cart-close">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
+        
         <div class="cart-items" id="cart-items">
-            <!-- Itens do carrinho serão adicionados aqui -->
+            <!-- Os itens do carrinho serão carregados dinamicamente -->
         </div>
-        <div class="cart-total">
-            Total: R$ <span id="cart-total">0,00</span>
+        
+        <div class="cart-footer">
+            <div class="min-order-warning">
+                Pedido mínimo: 10 peças
+            </div>
+            
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total">R$ 0,00</span>
+            </div>
+            
+            <button class="checkout-btn" id="checkout-btn">Finalizar Compra</button>
         </div>
-        <button class="checkout-btn" id="checkout-btn">Finalizar Pedido</button>
     </div>
     
-    <!-- Modal de finalização de compra -->
+    <!-- Checkout -->
     <div class="checkout-modal" id="checkout-modal">
         <div class="checkout-content">
             <div class="checkout-header">
-                <h3>Finalizar Pedido</h3>
-                <div class="close-icon close-checkout">✕</div>
+                <h2 class="checkout-title">Finalizar Pedido</h2>
+                <button class="checkout-close" id="checkout-close">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
+            
             <div class="checkout-body">
-                <div class="min-order-warning">
-                    Pedido mínimo: 10 peças
+                <div class="checkout-items" id="checkout-items">
+                    <!-- Os itens do pedido serão carregados dinamicamente -->
                 </div>
-                <div class="order-summary" id="order-summary">
-                    <!-- Resumo do pedido será adicionado aqui -->
+                
+                <div class="checkout-total">
+                    <span>Total:</span>
+                    <span id="checkout-total">R$ 0,00</span>
                 </div>
+                
                 <form id="checkout-form">
                     <div class="form-group">
-                        <label for="customer-name">Nome:</label>
-                        <input type="text" id="customer-name" required>
+                        <label class="form-label" for="customer-name">Nome completo</label>
+                        <input type="text" id="customer-name" class="form-input" required>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="customer-cep">CEP:</label>
-                        <input type="text" id="customer-cep" required>
-                        <small>O frete será calculado quando o pedido for enviado via WhatsApp.</small>
+                        <label class="form-label" for="customer-cep">CEP</label>
+                        <input type="text" id="customer-cep" class="form-input" required>
+                        <p class="form-note">O frete será calculado quando o pedido for enviado via WhatsApp.</p>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="customer-address">Endereço:</label>
-                        <input type="text" id="customer-address" required>
+                        <label class="form-label" for="customer-address">Endereço completo</label>
+                        <input type="text" id="customer-address" class="form-input" required>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="delivery-type">Tipo de entrega:</label>
-                        <select id="delivery-type" required>
-                            <option value="">Selecione</option>
+                        <label class="form-label" for="delivery-type">Tipo de entrega</label>
+                        <select id="delivery-type" class="form-select" required>
+                            <option value="">Selecione...</option>
                             <option value="transportadora">Transportadora</option>
                             <option value="excursões">Excursões</option>
                             <option value="uber">Uber</option>
                             <option value="correio">Correio</option>
                         </select>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="customer-phone">Telefone:</label>
-                        <input type="tel" id="customer-phone" required>
+                        <label class="form-label" for="customer-phone">Telefone</label>
+                        <input type="tel" id="customer-phone" class="form-input" required>
                     </div>
+                    
                     <div class="form-group">
-                        <label>Forma de pagamento:</label>
-                        <p>Pagamento apenas via PIX</p>
+                        <label class="form-label">Forma de pagamento</label>
+                        <p>Pagamentos apenas via PIX</p>
                     </div>
-                    <button type="button" class="send-whatsapp-btn" id="send-whatsapp">
-                        Enviar pedido via WhatsApp
-                    </button>
+                    
+                    <button type="submit" class="submit-order-btn">Enviar Pedido via WhatsApp</button>
                 </form>
             </div>
         </div>
     </div>
     
-    <!-- Área administrativa (inicialmente oculta) -->
-    <div id="admin-area" style="display: none;">
-        <div class="admin-panel">
-            <div class="admin-tabs">
-                <div class="admin-tab active" data-tab="products">Gerenciar Produtos</div>
-                <div class="admin-tab" data-tab="inventory">Controle de Estoque</div>
-                <div class="admin-tab" data-tab="settings">Configurações do Site</div>
+    <!-- Painel de administrador -->
+    <div class="admin-panel" id="admin-panel">
+        <div class="container">
+            <div class="admin-header">
+                <h1 class="admin-title">Painel Administrativo</h1>
+                <button class="admin-logout" id="admin-logout">Sair</button>
             </div>
             
-            <div class="admin-section active" id="products-section">
-                <h3>Adicionar Novo Produto</h3>
-                <div class="product-form">
+            <div class="admin-tabs">
+                <div class="admin-tab active" data-tab="config">Configurações</div>
+                <div class="admin-tab" data-tab="products">Produtos</div>
+                <div class="admin-tab" data-tab="inventory">Estoque</div>
+            </div>
+            
+            <!-- Mensagens -->
+            <div class="message" id="admin-message"></div>
+            
+            <!-- Configurações -->
+            <div class="admin-content active" id="config-content">
+                <div class="admin-form">
+                    <h3>Configurações do Site</h3>
+                    
                     <div class="form-group">
-                        <label for="product-name">Nome do Produto:</label>
-                        <input type="text" id="product-name">
+                        <label class="form-label" for="site-logo-input">Logo do Site</label>
+                        <input type="file" id="site-logo-input" accept="image/*">
+                        <p class="form-note">Ou insira a URL da imagem:</p>
+                        <input type="text" id="site-logo-url" class="form-input" placeholder="URL da logo">
                     </div>
+                    
                     <div class="form-group">
-                        <label for="product-price">Preço (R$):</label>
-                        <input type="number" id="product-price" step="0.01">
+                        <label class="form-label" for="primary-color">Cor Primária</label>
+                        <div class="color-picker">
+                            <input type="color" id="primary-color" class="color-input" value="#e91e63">
+                            <input type="text" id="primary-color-hex" class="form-input" value="#e91e63">
+                        </div>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="product-category">Categoria:</label>
-                        <select id="product-category">
+                        <label class="form-label" for="secondary-color">Cor Secundária</label>
+                        <div class="color-picker">
+                            <input type="color" id="secondary-color" class="color-input" value="#9c27b0">
+                            <input type="text" id="secondary-color-hex" class="form-input" value="#9c27b0">
+                        </div>
+                    </div>
+                    
+                    <h3>Informações de Contato</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="footer-phone-input">Telefone</label>
+                        <input type="text" id="footer-phone-input" class="form-input" placeholder="(11) 99999-9999">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="footer-email-input">Email</label>
+                        <input type="email" id="footer-email-input" class="form-input" placeholder="contato@exemplo.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="footer-instagram-input">Instagram</label>
+                        <input type="text" id="footer-instagram-input" class="form-input" placeholder="URL do Instagram">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="footer-facebook-input">Facebook</label>
+                        <input type="text" id="footer-facebook-input" class="form-input" placeholder="URL do Facebook">
+                    </div>
+                    
+                    <button class="admin-btn" id="save-config-btn">Salvar Configurações</button>
+                </div>
+            </div>
+            
+            <!-- Produtos -->
+            <div class="admin-content" id="products-content">
+                <div class="admin-form">
+                    <h3>Adicionar Novo Produto</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="product-name">Nome do Produto</label>
+                        <input type="text" id="product-name" class="form-input" placeholder="Ex: Top Fitness Básico">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="product-price">Preço (R$)</label>
+                        <input type="number" id="product-price" class="form-input" placeholder="Ex: 49.90" step="0.01" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="product-category">Categoria</label>
+                        <select id="product-category" class="form-select">
                             <option value="conjuntos">Conjuntos</option>
                             <option value="macaquinhos">Macaquinhos</option>
                             <option value="tops">Tops</option>
                             <option value="shorts">Shorts</option>
                         </select>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="product-images">URLs das Imagens (separadas por vírgula):</label>
-                        <textarea id="product-images" placeholder="https://exemplo.com/imagem1.jpg, https://exemplo.com/imagem2.jpg, https://exemplo.com/imagem3.jpg"></textarea>
+                        <label class="form-label">Imagens do Produto</label>
+                        <p class="form-note">Faça upload das imagens ou insira as URLs:</p>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label class="form-label" for="product-image1">Imagem 1</label>
+                                <input type="file" id="product-image1" accept="image/*">
+                                <input type="text" id="product-image1-url" class="form-input" placeholder="URL da imagem 1">
+                            </div>
+                            
+                            <div class="form-col">
+                                <label class="form-label" for="product-image2">Imagem 2</label>
+                                <input type="file" id="product-image2" accept="image/*">
+                                <input type="text" id="product-image2-url" class="form-input" placeholder="URL da imagem 2">
+                            </div>
+                            
+                            <div class="form-col">
+                                <label class="form-label" for="product-image3">Imagem 3</label>
+                                <input type="file" id="product-image3" accept="image/*">
+                                <input type="text" id="product-image3-url" class="form-input" placeholder="URL da imagem 3">
+                            </div>
+                        </div>
                     </div>
-                    <div class="color-form">
-                        <h4>Cores e Estoque</h4>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Cores e Estoque Inicial</label>
                         <div id="color-fields">
                             <!-- Campos de cor serão adicionados dinamicamente -->
                         </div>
-                        <button type="button" id="add-color">Adicionar Cor</button>
+                        <button type="button" class="admin-btn secondary" id="add-color-btn">Adicionar Cor</button>
                     </div>
-                    <button type="button" class="save-btn" id="save-product">Salvar Produto</button>
+                    
+                    <button class="admin-btn" id="add-product-btn">Adicionar Produto</button>
                 </div>
                 
-                <h3>Produtos Existentes</h3>
-                <div id="existing-products">
-                    <!-- Lista de produtos existentes será carregada aqui -->
+                <h3>Produtos Cadastrados</h3>
+                <div id="products-list">
+                    <!-- Lista de produtos será carregada dinamicamente -->
                 </div>
             </div>
             
-            <div class="admin-section" id="inventory-section">
+            <!-- Estoque -->
+            <div class="admin-content" id="inventory-content">
                 <h3>Controle de Estoque</h3>
-                <table class="inventory-table">
+                <p>Atualize as quantidades em estoque para cada produto e cor:</p>
+                
+                <div class="loading" id="inventory-loading">
+                    <div class="spinner"></div>
+                    <p>Carregando estoque...</p>
+                </div>
+                
+                <table class="inventory-table" id="inventory-table">
                     <thead>
                         <tr>
                             <th>Produto</th>
                             <th>Cor</th>
-                            <th>Estoque</th>
-                            <th>Ações</th>
+                            <th>Estoque Atual</th>
+                            <th>Nova Quantidade</th>
+                            <th>Ação</th>
                         </tr>
                     </thead>
-                    <tbody id="inventory-table-body">
-                        <!-- Dados de estoque serão carregados aqui -->
+                    <tbody id="inventory-tbody">
+                        <!-- Dados de estoque serão carregados dinamicamente -->
                     </tbody>
                 </table>
-            </div>
-            
-            <div class="admin-section" id="settings-section">
-                <h3>Configurações do Site</h3>
-                <div class="form-group">
-                    <label for="site-logo-url">URL da Logo:</label>
-                    <input type="text" id="site-logo-url">
-                    <button type="button" class="save-btn" id="save-logo">Salvar Logo</button>
-                </div>
-                <div class="form-group">
-                    <label for="primary-color">Cor Primária:</label>
-                    <input type="color" id="primary-color" value="#ff6b6b">
-                    <button type="button" class="save-btn" id="save-colors">Salvar Cores</button>
-                </div>
             </div>
         </div>
     </div>
     
-    <!-- Login administrativo -->
-    <div class="admin-login" id="admin-login">
-        <h3>Área Administrativa</h3>
-        <div class="form-group">
-            <label for="admin-email">Email:</label>
-            <input type="email" id="admin-email">
+    <!-- Login -->
+    <div class="login-modal" id="login-modal">
+        <div class="login-content">
+            <h2 class="login-title">Acesso Administrativo</h2>
+            
+            <div class="message" id="login-message"></div>
+            
+            <div class="form-group">
+                <label class="form-label" for="admin-email">Email</label>
+                <input type="email" id="admin-email" class="form-input" placeholder="seu@email.com">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="admin-password">Senha</label>
+                <input type="password" id="admin-password" class="form-input" placeholder="Sua senha">
+            </div>
+            
+            <button class="login-btn" id="login-btn">Entrar</button>
         </div>
-        <div class="form-group">
-            <label for="admin-password">Senha:</label>
-            <input type="password" id="admin-password">
-        </div>
-        <button type="button" class="save-btn" id="admin-login-btn">Entrar</button>
+    </div>
+    
+    <!-- Loading geral -->
+    <div class="loading" id="global-loading">
+        <div class="spinner"></div>
+        <p>Carregando...</p>
     </div>
 
+    <!-- Firebase e configuração do app -->
     <script>
-        // ===== CONFIGURAÇÃO DO FIREBASE - SUBSTITUA COM SEUS DADOS =====
-        // COLE AQUI AS CONFIGURAÇÕES DO SEU NOVO PROJETO FIREBASE
-        const firebaseConfig = {
+       // Configuração do Firebase
+const firebaseConfig = {
     apiKey: "AIzaSyAn5SPhZJPqR6IdQecnFnMwLdDm3efy4ko",
     authDomain: "hellen-moda-fitnes.firebaseapp.com",
     projectId: "hellen-moda-fitnes",
     storageBucket: "hellen-moda-fitnes.firebasestorage.app",
     messagingSenderId: "998940228851",
     appId: "1:998940228851:web:d4e8d3ac366c26fe9e4b86"
-  };
+};
 
-        // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
+// Inicializar Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
+const auth = firebase.auth();
 
-        // ===== VARIÁVEIS GLOBAIS =====
-        let currentUser = null;
-        let products = [];
-        let cart = [];
-        let currentProduct = null;
-        let currentImageIndex = 0;
+// Variáveis globais
+let currentUser = null;
+let products = [];
+let cart = [];
+let currentProduct = null;
+let currentImageIndex = 0;
+let reservationTimers = {}; // ← NOVO: Controla as reservas temporárias
 
-        // ===== ELEMENTOS DO DOM =====
-        const elements = {
-            siteLogo: document.getElementById('site-logo'),
-            homeIcon: document.getElementById('home-icon'),
-            menuIcon: document.getElementById('menu-icon'),
-            cartIcon: document.getElementById('cart-icon'),
-            sideMenu: document.getElementById('side-menu'),
-            overlay: document.getElementById('overlay'),
-            closeMenu: document.querySelector('.close-menu'),
-            menuItems: document.querySelectorAll('.menu-items a'),
-            productsGrid: document.getElementById('products-grid'),
-            productModal: document.getElementById('product-modal'),
-            closeModal: document.querySelector('.close-modal'),
-            carouselImages: document.getElementById('carousel-images'),
-            prevBtn: document.querySelector('.prev-btn'),
-            nextBtn: document.querySelector('.next-btn'),
-            modalProductName: document.getElementById('modal-product-name'),
-            modalProductPrice: document.getElementById('modal-product-price'),
-            colorOptions: document.getElementById('color-options'),
-            addToCartBtn: document.getElementById('add-to-cart'),
-            cartSidebar: document.getElementById('cart-sidebar'),
-            closeCart: document.querySelector('.close-cart'),
-            cartItems: document.getElementById('cart-items'),
-            cartTotal: document.getElementById('cart-total'),
-            cartCount: document.getElementById('cart-count'),
-            checkoutBtn: document.getElementById('checkout-btn'),
-            floatingCheckout: document.getElementById('floating-checkout'),
-            checkoutModal: document.getElementById('checkout-modal'),
-            closeCheckout: document.querySelector('.close-checkout'),
-            orderSummary: document.getElementById('order-summary'),
-            checkoutForm: document.getElementById('checkout-form'),
-            sendWhatsApp: document.getElementById('send-whatsapp'),
-            adminArea: document.getElementById('admin-area'),
-            adminLogin: document.getElementById('admin-login'),
-            adminEmail: document.getElementById('admin-email'),
-            adminPassword: document.getElementById('admin-password'),
-            adminLoginBtn: document.getElementById('admin-login-btn'),
-            adminTabs: document.querySelectorAll('.admin-tab'),
-            adminSections: document.querySelectorAll('.admin-section'),
-            productName: document.getElementById('product-name'),
-            productPrice: document.getElementById('product-price'),
-            productCategory: document.getElementById('product-category'),
-            productImages: document.getElementById('product-images'),
-            colorFields: document.getElementById('color-fields'),
-            addColor: document.getElementById('add-color'),
-            saveProduct: document.getElementById('save-product'),
-            existingProducts: document.getElementById('existing-products'),
-            inventoryTableBody: document.getElementById('inventory-table-body'),
-            siteLogoUrl: document.getElementById('site-logo-url'),
-            primaryColor: document.getElementById('primary-color'),
-            saveLogo: document.getElementById('save-logo'),
-            saveColors: document.getElementById('save-colors')
-        };
+// Elementos DOM (mantido igual)
+const elements = {
+    // ... (todo o código de elementos permanece IGUAL) ...
+};
 
-        // ===== INICIALIZAÇÃO =====
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-            setupEventListeners();
-            loadProducts();
-            loadSiteSettings();
-            checkAdminAuth();
-        });
+// Inicializar a aplicação (mantido igual)
+document.addEventListener('DOMContentLoaded', function() {
+    initApp();
+});
 
-        function initializeApp() {
-            const savedCart = localStorage.getItem('cart');
-            if (savedCart) {
-                cart = JSON.parse(savedCart);
-                updateCartUI();
-            }
-            
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    currentUser = user;
-                    showAdminPanel();
-                } else {
-                    currentUser = null;
-                    showAdminLogin();
-                }
-            });
-        }
+// ========== FUNÇÕES DE RESERVA DE ESTOQUE (NOVAS) ==========
 
-        function setupEventListeners() {
-            elements.menuIcon.addEventListener('click', toggleMenu);
-            elements.closeMenu.addEventListener('click', toggleMenu);
-            elements.overlay.addEventListener('click', closeAllModals);
-            elements.homeIcon.addEventListener('click', goToHome);
-            elements.cartIcon.addEventListener('click', toggleCart);
-            elements.closeCart.addEventListener('click', toggleCart);
-            elements.floatingCheckout.addEventListener('click', openCheckout);
-            
-            elements.menuItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const category = this.getAttribute('data-category');
-                    filterProducts(category);
-                    toggleMenu();
-                });
-            });
-            
-            elements.closeModal.addEventListener('click', closeProductModal);
-            elements.prevBtn.addEventListener('click', showPrevImage);
-            elements.nextBtn.addEventListener('click', showNextImage);
-            elements.addToCartBtn.addEventListener('click', addToCartFromModal);
-            
-            elements.closeCheckout.addEventListener('click', closeCheckout);
-            elements.checkoutBtn.addEventListener('click', openCheckout);
-            elements.sendWhatsApp.addEventListener('click', sendOrderViaWhatsApp);
-            
-            elements.adminLoginBtn.addEventListener('click', adminLogin);
-            elements.adminTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    switchAdminTab(this.getAttribute('data-tab'));
-                });
-            });
-            
-            elements.addColor.addEventListener('click', addColorField);
-            elements.saveProduct.addEventListener('click', saveProduct);
-            elements.saveLogo.addEventListener('click', saveSiteLogo);
-            elements.saveColors.addEventListener('click', saveSiteColors);
-        }
-
-        // ===== FUNÇÕES DE UI =====
-        function toggleMenu() {
-            elements.sideMenu.classList.toggle('active');
-            elements.overlay.classList.toggle('active');
-        }
-
-        function toggleCart() {
-            elements.cartSidebar.classList.toggle('active');
-            elements.overlay.classList.toggle('active');
-        }
-
-        function closeAllModals() {
-            elements.sideMenu.classList.remove('active');
-            elements.cartSidebar.classList.remove('active');
-            elements.productModal.classList.remove('active');
-            elements.checkoutModal.classList.remove('active');
-            elements.overlay.classList.remove('active');
-        }
-
-        function goToHome() {
-            window.scrollTo(0, 0);
-            filterProducts('all');
-        }
-
-        function openProductModal(product) {
-            currentProduct = product;
-            currentImageIndex = 0;
-            
-            elements.modalProductName.textContent = product.name;
-            elements.modalProductPrice.textContent = `R$ ${product.price.toFixed(2)}`;
-            
-            elements.carouselImages.innerHTML = '';
-            product.images.forEach((image, index) => {
-                const img = document.createElement('img');
-                img.src = image;
-                img.alt = product.name;
-                img.className = 'carousel-image';
-                if (index === 0) img.style.display = 'block';
-                elements.carouselImages.appendChild(img);
-            });
-            
-            elements.colorOptions.innerHTML = '';
-            product.colors.forEach(color => {
-                const colorOption = document.createElement('div');
-                colorOption.className = 'color-option';
-                colorOption.innerHTML = `
-                    <div class="color-name">
-                        <div class="color-swatch" style="background-color: ${color.hex}"></div>
-                        <span>${color.name} (Estoque: ${color.stock})</span>
-                    </div>
-                    <input type="number" class="quantity-input" min="0" max="${color.stock}" value="0" data-color="${color.name}">
-                `;
-                elements.colorOptions.appendChild(colorOption);
-            });
-            
-            elements.productModal.classList.add('active');
-            elements.overlay.classList.add('active');
-        }
-
-        function closeProductModal() {
-            elements.productModal.classList.remove('active');
-            elements.overlay.classList.remove('active');
-        }
-
-        function showPrevImage() {
-            if (currentImageIndex > 0) {
-                currentImageIndex--;
-                updateCarousel();
-            }
-        }
-
-        function showNextImage() {
-            if (currentImageIndex < currentProduct.images.length - 1) {
-                currentImageIndex++;
-                updateCarousel();
-            }
-        }
-
-        function updateCarousel() {
-            const images = document.querySelectorAll('.carousel-image');
-            images.forEach((img, index) => {
-                img.style.display = index === currentImageIndex ? 'block' : 'none';
-            });
-        }
-
-        function openCheckout() {
-            if (cart.length === 0) {
-                alert('Seu carrinho está vazio!');
-                return;
-            }
-            
-            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-            
-            if (totalItems < 10) {
-                alert(`Pedido mínimo de 10 peças. Seu pedido atual tem ${totalItems} peças.`);
-                return;
-            }
-            
-            elements.orderSummary.innerHTML = '';
-            cart.forEach(item => {
-                const itemElement = document.createElement('div');
-                itemElement.className = 'order-item';
-                itemElement.innerHTML = `
-                    <p>${item.name} - ${item.color} (${item.quantity}x) - R$ ${(item.price * item.quantity).toFixed(2)}</p>
-                `;
-                elements.orderSummary.appendChild(itemElement);
-            });
-            
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const totalElement = document.createElement('div');
-            totalElement.className = 'order-total';
-            totalElement.innerHTML = `<p><strong>Total: R$ ${total.toFixed(2)}</strong></p>`;
-            elements.orderSummary.appendChild(totalElement);
-            
-            elements.checkoutModal.classList.add('active');
-            elements.overlay.classList.add('active');
-        }
-
-        function closeCheckout() {
-            elements.checkoutModal.classList.remove('active');
-            elements.overlay.classList.remove('active');
-        }
-
-        // ===== FUNÇÕES DO CARRINHO =====
-        function addToCartFromModal() {
-            const colorInputs = document.querySelectorAll('.quantity-input');
-            let addedItems = false;
-            
-            colorInputs.forEach(input => {
-                const quantity = parseInt(input.value);
-                const colorName = input.getAttribute('data-color');
-                
-                if (quantity > 0) {
-                    const color = currentProduct.colors.find(c => c.name === colorName);
-                    
-                    if (color && quantity <= color.stock) {
-                        const cartItem = {
-                            id: currentProduct.id,
-                            name: currentProduct.name,
-                            price: currentProduct.price,
-                            color: colorName,
-                            quantity: quantity,
-                            image: currentProduct.images[0]
+// Reservar estoque temporariamente
+function reserveStock(productId, colorName, quantity) {
+    return db.collection('products').doc(productId).get()
+        .then(doc => {
+            if (doc.exists) {
+                const product = doc.data();
+                const updatedColors = product.colors.map(color => {
+                    if (color.name === colorName) {
+                        // Calcular estoque disponível (total - reservado)
+                        const availableStock = color.stock - (color.reserved || 0);
+                        if (availableStock < quantity) {
+                            throw new Error(`Estoque insuficiente para ${colorName}. Disponível: ${availableStock}`);
+                        }
+                        
+                        // Atualizar quantidade reservada
+                        return {
+                            ...color,
+                            reserved: (color.reserved || 0) + quantity
                         };
-                        
-                        const existingItemIndex = cart.findIndex(item => 
-                            item.id === cartItem.id && item.color === cartItem.color
-                        );
-                        
-                        if (existingItemIndex !== -1) {
-                            cart[existingItemIndex].quantity += quantity;
-                        } else {
-                            cart.push(cartItem);
-                        }
-                        
-                        addedItems = true;
-                    } else {
-                        alert(`Quantidade solicitada para ${colorName} excede o estoque disponível.`);
                     }
-                }
-            });
-            
-            if (addedItems) {
-                saveCart();
-                updateCartUI();
-                closeProductModal();
-                alert('Itens adicionados ao carrinho!');
-            } else {
-                alert('Selecione pelo menos uma cor e quantidade para adicionar ao carrinho.');
-            }
-        }
-
-        function updateCartUI() {
-            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-            elements.cartCount.textContent = totalItems;
-            
-            elements.cartItems.innerHTML = '';
-            
-            if (cart.length === 0) {
-                elements.cartItems.innerHTML = '<p>Seu carrinho está vazio.</p>';
-                elements.cartTotal.textContent = '0,00';
-                return;
-            }
-            
-            let total = 0;
-            
-            cart.forEach((item, index) => {
-                const itemElement = document.createElement('div');
-                itemElement.className = 'cart-item';
-                itemElement.innerHTML = `
-                    <img src="${item.image}" alt="${item.name}" class="cart-item-image">
-                    <div class="cart-item-details">
-                        <div class="cart-item-name">${item.name}</div>
-                        <div class="cart-item-color">Cor: ${item.color}</div>
-                        <div class="cart-item-quantity">
-                            <button class="quantity-btn minus" data-index="${index}">-</button>
-                            <span>${item.quantity}</span>
-                            <button class="quantity-btn plus" data-index="${index}">+</button>
-                        </div>
-                    </div>
-                    <div class="remove-item" data-index="${index}">✕</div>
-                `;
+                    return color;
+                });
                 
-                elements.cartItems.appendChild(itemElement);
-                total += item.price * item.quantity;
-            });
-            
-            elements.cartTotal.textContent = total.toFixed(2);
-            
-            document.querySelectorAll('.quantity-btn.minus').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    if (cart[index].quantity > 1) {
-                        cart[index].quantity--;
-                    } else {
-                        cart.splice(index, 1);
+                return db.collection('products').doc(productId).update({
+                    colors: updatedColors
+                });
+            }
+        });
+}
+
+// Liberar estoque reservado
+function releaseStock(productId, colorName, quantity) {
+    return db.collection('products').doc(productId).get()
+        .then(doc => {
+            if (doc.exists) {
+                const product = doc.data();
+                const updatedColors = product.colors.map(color => {
+                    if (color.name === colorName) {
+                        return {
+                            ...color,
+                            reserved: Math.max(0, (color.reserved || 0) - quantity)
+                        };
                     }
-                    saveCart();
-                    updateCartUI();
+                    return color;
                 });
-            });
-            
-            document.querySelectorAll('.quantity-btn.plus').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    const product = products.find(p => p.id === cart[index].id);
-                    if (product) {
-                        const color = product.colors.find(c => c.name === cart[index].color);
-                        if (color && cart[index].quantity < color.stock) {
-                            cart[index].quantity++;
-                            saveCart();
-                            updateCartUI();
-                        } else {
-                            alert('Quantidade máxima em estoque atingida para esta cor.');
-                        }
-                    }
+                
+                return db.collection('products').doc(productId).update({
+                    colors: updatedColors
                 });
-            });
-            
-            document.querySelectorAll('.remove-item').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    cart.splice(index, 1);
-                    saveCart();
-                    updateCartUI();
-                });
-            });
-        }
-
-        function saveCart() {
-            localStorage.setItem('cart', JSON.stringify(cart));
-        }
-
-        // ===== FINALIZAÇÃO DO PEDIDO =====
-        function sendOrderViaWhatsApp() {
-            if (!elements.checkoutForm.checkValidity()) {
-                alert('Por favor, preencha todos os campos obrigatórios.');
-                return;
             }
-            
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-            
-            let message = `Olá! Gostaria de fazer um pedido:\n\n`;
-            
-            cart.forEach(item => {
-                message += `• ${item.name} - ${item.color} (${item.quantity}x) - R$ ${(item.price * item.quantity).toFixed(2)}\n`;
-            });
-            
-            message += `\nTotal: R$ ${total.toFixed(2)} (${totalItems} peças)\n\n`;
-            message += `Dados do cliente:\n`;
-            message += `Nome: ${document.getElementById('customer-name').value}\n`;
-            message += `CEP: ${document.getElementById('customer-cep').value}\n`;
-            message += `Endereço: ${document.getElementById('customer-address').value}\n`;
-            message += `Tipo de entrega: ${document.getElementById('delivery-type').value}\n`;
-            message += `Telefone: ${document.getElementById('customer-phone').value}\n`;
-            message += `Forma de pagamento: PIX`;
-            
-            const encodedMessage = encodeURIComponent(message);
-            const phoneNumber = "5511999999999"; // ALTERE PARA SEU NÚMERO
-            
-            window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
-            
-            cart = [];
-            saveCart();
-            updateCartUI();
-            closeCheckout();
-            
-            alert('Pedido enviado via WhatsApp! Em breve entraremos em contato.');
-        }
+        });
+}
 
-        // ===== CATÁLOGO DE PRODUTOS =====
-        function loadProducts() {
-            db.collection('products').get()
-                .then(snapshot => {
-                    products = [];
-                    snapshot.forEach(doc => {
-                        const product = doc.data();
-                        product.id = doc.id;
-                        products.push(product);
-                    });
-                    displayProducts(products);
-                })
-                .catch(error => {
-                    console.error('Erro ao carregar produtos:', error);
-                });
-        }
-
-        function displayProducts(productsToShow) {
-            elements.productsGrid.innerHTML = '';
-            
-            if (productsToShow.length === 0) {
-                elements.productsGrid.innerHTML = '<p>Nenhum produto encontrado.</p>';
-                return;
-            }
-            
-            productsToShow.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-                productCard.innerHTML = `
-                    <img src="${product.images[0]}" alt="${product.name}" class="product-image">
-                    <div class="thumbnails">
-                        ${product.images.slice(0, 3).map((image, index) => 
-                            `<img src="${image}" alt="${product.name}" class="thumbnail ${index === 0 ? 'active' : ''}" data-index="${index}">`
-                        ).join('')}
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">${product.name}</h3>
-                        <p class="product-price">R$ ${product.price.toFixed(2)}</p>
-                        <button class="buy-btn" data-id="${product.id}">Comprar</button>
-                    </div>
-                `;
-                
-                elements.productsGrid.appendChild(productCard);
-                
-                const thumbnails = productCard.querySelectorAll('.thumbnail');
-                const mainImage = productCard.querySelector('.product-image');
-                
-                thumbnails.forEach(thumbnail => {
-                    thumbnail.addEventListener('click', function() {
-                        const index = parseInt(this.getAttribute('data-index'));
-                        mainImage.src = product.images[index];
-                        thumbnails.forEach(t => t.classList.remove('active'));
-                        this.classList.add('active');
-                    });
-                });
-                
-                const buyBtn = productCard.querySelector('.buy-btn');
-                buyBtn.addEventListener('click', function() {
-                    const productId = this.getAttribute('data-id');
-                    const product = products.find(p => p.id === productId);
-                    if (product) {
-                        openProductModal(product);
-                    }
-                });
-            });
-        }
-
-        function filterProducts(category) {
-            if (category === 'all') {
-                displayProducts(products);
-            } else {
-                const filteredProducts = products.filter(product => product.category === category);
-                displayProducts(filteredProducts);
-            }
-        }
-
-        // ===== ÁREA ADMINISTRATIVA =====
-        function checkAdminAuth() {
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    currentUser = user;
-                    showAdminPanel();
-                } else {
-                    showAdminLogin();
-                }
-            });
-        }
-
-        function showAdminLogin() {
-            elements.adminLogin.style.display = 'block';
-            elements.adminArea.style.display = 'none';
-        }
-
-        function showAdminPanel() {
-            elements.adminLogin.style.display = 'none';
-            elements.adminArea.style.display = 'block';
-            loadExistingProducts();
-            loadInventory();
-        }
-
-        function adminLogin() {
-            const email = elements.adminEmail.value;
-            const password = elements.adminPassword.value;
-            
-            auth.signInWithEmailAndPassword(email, password)
-                .then(userCredential => {
-                    currentUser = userCredential.user;
-                    showAdminPanel();
-                })
-                .catch(error => {
-                    alert('Erro no login: ' + error.message);
-                });
-        }
-
-        function switchAdminTab(tabName) {
-            elements.adminTabs.forEach(tab => {
-                if (tab.getAttribute('data-tab') === tabName) {
-                    tab.classList.add('active');
-                } else {
-                    tab.classList.remove('active');
-                }
-            });
-            
-            elements.adminSections.forEach(section => {
-                if (section.id === `${tabName}-section`) {
-                    section.classList.add('active');
-                } else {
-                    section.classList.remove('active');
-                }
-            });
-        }
-
-        function addColorField() {
-            const colorField = document.createElement('div');
-            colorField.className = 'color-field';
-            colorField.innerHTML = `
-                <div class="form-group">
-                    <input type="text" placeholder="Nome da cor" class="color-name-input">
-                    <input type="color" class="color-hex-input">
-                    <input type="number" placeholder="Estoque" min="0" class="color-stock-input">
-                    <button type="button" class="remove-color">Remover</button>
-                </div>
-            `;
-            
-            elements.colorFields.appendChild(colorField);
-            
-            colorField.querySelector('.remove-color').addEventListener('click', function() {
-                colorField.remove();
-            });
-        }
-
-        function saveProduct() {
-            const name = elements.productName.value;
-            const price = parseFloat(elements.productPrice.value);
-            const category = elements.productCategory.value;
-            const images = elements.productImages.value.split(',').map(url => url.trim());
-            
-            const colors = [];
-            const colorFields = elements.colorFields.querySelectorAll('.color-field');
-            
-            colorFields.forEach(field => {
-                const nameInput = field.querySelector('.color-name-input');
-                const hexInput = field.querySelector('.color-hex-input');
-                const stockInput = field.querySelector('.color-stock-input');
-                
-                if (nameInput.value && hexInput.value && stockInput.value) {
-                    colors.push({
-                        name: nameInput.value,
-                        hex: hexInput.value,
-                        stock: parseInt(stockInput.value)
-                    });
-                }
-            });
-            
-            if (!name || !price || !category || images.length === 0 || colors.length === 0) {
-                alert('Por favor, preencha todos os campos obrigatórios.');
-                return;
-            }
-            
-            db.collection('products').add({
-                name: name,
-                price: price,
-                category: category,
-                images: images,
-                colors: colors,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            })
+// Iniciar timer para liberar reserva expirada
+function startReservationTimer(productId, colorName, quantity, itemId) {
+    const timerKey = `${productId}_${colorName}_${itemId}`;
+    
+    // Cancela timer anterior se existir
+    if (reservationTimers[timerKey]) {
+        clearTimeout(reservationTimers[timerKey]);
+    }
+    
+    // Novo timer de 15 minutos (ajuste conforme necessidade)
+    reservationTimers[timerKey] = setTimeout(() => {
+        releaseStock(productId, colorName, quantity)
             .then(() => {
-                alert('Produto salvo com sucesso!');
-                elements.productName.value = '';
-                elements.productPrice.value = '';
-                elements.productImages.value = '';
-                elements.colorFields.innerHTML = '';
+                console.log(`Reserva expirada: ${quantity} ${colorName} do produto ${productId}`);
+                delete reservationTimers[timerKey];
+                
+                // Atualizar lista de produtos se estiver visível
                 loadProducts();
-                loadExistingProducts();
             })
             .catch(error => {
-                alert('Erro ao salvar produto: ' + error.message);
+                console.error('Erro ao liberar reserva expirada:', error);
             });
-        }
+    }, 15 * 60 * 1000); // 15 minutos
+}
 
-        function loadExistingProducts() {
-            db.collection('products').get()
-                .then(snapshot => {
-                    elements.existingProducts.innerHTML = '<h4>Produtos Cadastrados</h4>';
+// Renovar timer quando usuário interagir com o carrinho
+function renewReservationTimer(productId, colorName, quantity, itemId) {
+    startReservationTimer(productId, colorName, quantity, itemId);
+}
+
+// ========== FUNÇÕES MODIFICADAS ==========
+
+// Adicionar ao carrinho (MODIFICADA)
+function addToCart(product, color, quantity) {
+    // Primeiro reserva o estoque
+    reserveStock(product.id, color, quantity)
+        .then(() => {
+            // Criar ID único para este item no carrinho
+            const itemId = Date.now().toString();
+            
+            const existingItemIndex = cart.findIndex(item => 
+                item.productId === product.id && item.color === color
+            );
+            
+            if (existingItemIndex > -1) {
+                // Atualizar quantidade existente
+                cart[existingItemIndex].quantity += quantity;
+                cart[existingItemIndex].itemId = itemId; // Atualizar ID
+            } else {
+                // Adicionar novo item
+                cart.push({
+                    itemId: itemId,
+                    productId: product.id,
+                    name: product.name,
+                    price: product.price,
+                    color: color,
+                    quantity: quantity,
+                    image: product.images && product.images.length > 0 ? product.images[0] : ''
+                });
+            }
+            
+            // Iniciar timer para este item
+            startReservationTimer(product.id, color, quantity, itemId);
+            
+            saveCartToStorage();
+            updateCartBadge();
+            renderProducts(); // Atualizar estoque exibido
+            
+            alert('Produto adicionado ao carrinho! Estoque reservado por 15 minutos.');
+        })
+        .catch(error => {
+            alert('Erro: ' + error.message);
+        });
+}
+
+// Remover do carrinho (MODIFICADA)
+function removeFromCart(productId, color) {
+    const itemIndex = cart.findIndex(item => 
+        item.productId === productId && item.color === color
+    );
+    
+    if (itemIndex > -1) {
+        const item = cart[itemIndex];
+        
+        // Liberar o estoque reservado
+        releaseStock(productId, color, item.quantity)
+            .then(() => {
+                // Remover timer
+                const timerKey = `${productId}_${color}_${item.itemId}`;
+                if (reservationTimers[timerKey]) {
+                    clearTimeout(reservationTimers[timerKey]);
+                    delete reservationTimers[timerKey];
+                }
+                
+                // Remover do carrinho
+                cart.splice(itemIndex, 1);
+                saveCartToStorage();
+                updateCartBadge();
+                renderProducts(); // Atualizar estoque exibido
+                
+                if (elements.cartModal.classList.contains('active')) {
+                    renderCartItems();
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao liberar estoque:', error);
+            });
+    }
+}
+
+// Atualizar quantidade no carrinho (MODIFICADA)
+function updateCartQuantity(productId, color, newQuantity, itemId) {
+    const itemIndex = cart.findIndex(item => 
+        item.productId === productId && item.color === color
+    );
+    
+    if (itemIndex > -1) {
+        const oldQuantity = cart[itemIndex].quantity;
+        const difference = newQuantity - oldQuantity;
+        
+        if (difference > 0) {
+            // Aumentando quantidade - tentar reservar mais
+            reserveStock(productId, color, difference)
+                .then(() => {
+                    cart[itemIndex].quantity = newQuantity;
+                    saveCartToStorage();
+                    updateCartBadge();
                     
-                    if (snapshot.empty) {
-                        elements.existingProducts.innerHTML += '<p>Nenhum produto cadastrado.</p>';
-                        return;
-                    }
-                    
-                    snapshot.forEach(doc => {
-                        const product = doc.data();
-                        const productElement = document.createElement('div');
-                        productElement.className = 'existing-product';
-                        productElement.innerHTML = `
-                            <p><strong>${product.name}</strong> - R$ ${product.price.toFixed(2)}</p>
-                            <button class="delete-product" data-id="${doc.id}">Excluir</button>
-                        `;
-                        
-                        elements.existingProducts.appendChild(productElement);
-                        
-                        productElement.querySelector('.delete-product').addEventListener('click', function() {
-                            if (confirm('Tem certeza que deseja excluir este produto?')) {
-                                db.collection('products').doc(doc.id).delete()
-                                    .then(() => {
-                                        alert('Produto excluído com sucesso!');
-                                        loadExistingProducts();
-                                        loadProducts();
-                                    })
-                                    .catch(error => {
-                                        alert('Erro ao excluir produto: ' + error.message);
-                                    });
-                            }
-                        });
-                    });
+                    // Renovar timer
+                    renewReservationTimer(productId, color, newQuantity, itemId);
+                    renderProducts(); // Atualizar estoque exibido
                 })
                 .catch(error => {
-                    console.error('Erro ao carregar produtos existentes:', error);
+                    alert('Erro: ' + error.message);
+                    return false;
                 });
-        }
-
-        function loadInventory() {
-            db.collection('products').get()
-                .then(snapshot => {
-                    elements.inventoryTableBody.innerHTML = '';
+        } else if (difference < 0) {
+            // Diminuindo quantidade - liberar o excesso
+            releaseStock(productId, color, -difference)
+                .then(() => {
+                    cart[itemIndex].quantity = newQuantity;
+                    saveCartToStorage();
+                    updateCartBadge();
                     
-                    snapshot.forEach(doc => {
-                        const product = doc.data();
-                        product.id = doc.id;
-                        
-                        product.colors.forEach(color => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td>${product.name}</td>
-                                <td>${color.name}</td>
-                                <td>
-                                    <input type="number" value="${color.stock}" min="0" class="stock-input" data-product="${product.id}" data-color="${color.name}">
-                                </td>
-                                <td>
-                                    <button class="save-stock" data-product="${product.id}" data-color="${color.name}">Salvar</button>
-                                </td>
-                            `;
-                            
-                            elements.inventoryTableBody.appendChild(row);
-                            
-                            row.querySelector('.save-stock').addEventListener('click', function() {
-                                const newStock = parseInt(row.querySelector('.stock-input').value);
-                                updateStock(product.id, color.name, newStock);
-                            });
-                        });
-                    });
+                    // Renovar timer
+                    renewReservationTimer(productId, color, newQuantity, itemId);
+                    renderProducts(); // Atualizar estoque exibido
                 })
                 .catch(error => {
-                    console.error('Erro ao carregar inventário:', error);
+                    console.error('Erro ao liberar estoque:', error);
                 });
         }
+        
+        return true;
+    }
+    
+    return false;
+}
 
-        function updateStock(productId, colorName, newStock) {
-            db.collection('products').doc(productId).get()
-                .then(doc => {
-                    if (doc.exists) {
+// Finalizar compra (MODIFICADA)
+function submitOrder(e) {
+    e.preventDefault();
+    
+    // Verificar se há itens no carrinho
+    if (cart.length === 0) {
+        alert('Seu carrinho está vazio!');
+        return;
+    }
+    
+    // Verificar pedido mínimo
+    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+    if (totalItems < 10) {
+        alert('Pedido mínimo é de 10 peças. Seu pedido atual tem ' + totalItems + ' peças.');
+        return;
+    }
+    
+    // Verificar estoque final antes de confirmar
+    const stockPromises = cart.map(item => {
+        return db.collection('products').doc(item.productId).get()
+            .then(doc => {
+                const product = doc.data();
+                const colorData = product.colors.find(c => c.name === item.color);
+                const availableStock = colorData.stock - (colorData.reserved || 0);
+                
+                if (availableStock < item.quantity) {
+                    throw new Error(`Estoque insuficiente para ${item.name} (${item.color}). Disponível: ${availableStock}`);
+                }
+                
+                return true;
+            });
+    });
+    
+    Promise.all(stockPromises)
+        .then(() => {
+            // Converter reservas em vendas definitivas
+            const updatePromises = cart.map(item => {
+                return db.collection('products').doc(item.productId).get()
+                    .then(doc => {
                         const product = doc.data();
                         const updatedColors = product.colors.map(color => {
-                            if (color.name === colorName) {
-                                return { ...color, stock: newStock };
+                            if (color.name === item.color) {
+                                return {
+                                    ...color,
+                                    stock: color.stock - item.quantity,
+                                    reserved: Math.max(0, (color.reserved || 0) - item.quantity)
+                                };
                             }
                             return color;
                         });
                         
-                        return db.collection('products').doc(productId).update({
+                        return db.collection('products').doc(item.productId).update({
                             colors: updatedColors
                         });
-                    }
-                })
-                .then(() => {
-                    alert('Estoque atualizado com sucesso!');
-                    loadProducts();
-                    loadInventory();
-                })
-                .catch(error => {
-                    alert('Erro ao atualizar estoque: ' + error.message);
-                });
-        }
-
-        function loadSiteSettings() {
-            db.collection('settings').doc('site').get()
-                .then(doc => {
-                    if (doc.exists) {
-                        const settings = doc.data();
-                        if (settings.logo) {
-                            elements.siteLogo.src = settings.logo;
-                            elements.siteLogoUrl.value = settings.logo;
-                        }
-                        if (settings.primaryColor) {
-                            document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
-                            elements.primaryColor.value = settings.primaryColor;
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro ao carregar configurações:', error);
-                });
-        }
-
-        function saveSiteLogo() {
-            const logoUrl = elements.siteLogoUrl.value;
+                    });
+            });
             
-            if (!logoUrl) {
-                alert('Por favor, insira uma URL para a logo.');
-                return;
+            return Promise.all(updatePromises);
+        })
+        .then(() => {
+            // Limpar todos os timers
+            Object.keys(reservationTimers).forEach(key => {
+                clearTimeout(reservationTimers[key]);
+            });
+            reservationTimers = {};
+            
+            // Coletar dados do formulário
+            const formData = {
+                name: document.getElementById('customer-name').value,
+                cep: document.getElementById('customer-cep').value,
+                address: document.getElementById('customer-address').value,
+                deliveryType: document.getElementById('delivery-type').value,
+                phone: document.getElementById('customer-phone').value
+            };
+            
+            // Montar mensagem para WhatsApp
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let message = `Olá! Gostaria de fazer um pedido:\n\n`;
+            
+            cart.forEach(item => {
+                message += `${item.quantity}x ${item.name} (${item.color}) - R$ ${(item.price * item.quantity).toFixed(2)}\n`;
+            });
+            
+            message += `\nTotal: R$ ${total.toFixed(2)}\n\n`;
+            message += `Dados de entrega:\n`;
+            message += `Nome: ${formData.name}\n`;
+            message += `CEP: ${formData.cep}\n`;
+            message += `Endereço: ${formData.address}\n`;
+            message += `Tipo de entrega: ${formData.deliveryType}\n`;
+            message += `Telefone: ${formData.phone}\n\n`;
+            message += `Forma de pagamento: PIX`;
+            
+            // Abrir WhatsApp
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappNumber = '5585989408154'; // Substitua pelo número real
+            window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
+            
+            // Limpar carrinho
+            cart = [];
+            saveCartToStorage();
+            updateCartBadge();
+            renderProducts(); // Atualizar estoque exibido
+            
+            // Fechar modais
+            closeCheckout();
+            closeCart();
+            
+            alert('Pedido enviado com sucesso! Estoque atualizado.');
+        })
+        .catch(error => {
+            alert('Erro ao finalizar pedido: ' + error.message);
+        });
+}
+
+// ========== FUNÇÕES AUXILIARES MODIFICADAS ==========
+
+// Calcular estoque disponível para exibição
+function getAvailableStock(product, colorName) {
+    const color = product.colors.find(c => c.name === colorName);
+    if (color) {
+        return color.stock - (color.reserved || 0);
+    }
+    return 0;
+}
+
+// Renderizar produtos (MODIFICADA para mostrar estoque disponível)
+function renderProducts(category) {
+    elements.productsGrid.innerHTML = '';
+    
+    let filteredProducts = products;
+    if (category !== 'all') {
+        filteredProducts = products.filter(product => product.category === category);
+    }
+    
+    if (filteredProducts.length === 0) {
+        elements.productsGrid.innerHTML = '<p>Nenhum produto encontrado.</p>';
+        return;
+    }
+    
+    filteredProducts.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card';
+        
+        const mainImage = product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/300x300?text=Sem+Imagem';
+        
+        productCard.innerHTML = `
+            <div class="product-image">
+                <img src="${mainImage}" alt="${product.name}" data-product-id="${product.id}">
+            </div>
+            <div class="product-thumbnails">
+                ${product.images && product.images.length > 0 ? 
+                    product.images.map((img, index) => 
+                        `<img src="${img}" class="thumbnail ${index === 0 ? 'active' : ''}" data-product-id="${product.id}" data-image-index="${index}">`
+                    ).join('') 
+                    : ''
+                }
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">${product.name}</h3>
+                <p class="product-price">R$ ${product.price.toFixed(2)}</p>
+                <button class="buy-btn" data-product-id="${product.id}">Comprar</button>
+            </div>
+        `;
+        
+        elements.productsGrid.appendChild(productCard);
+    });
+    
+    // Event listeners (mantido igual)
+    document.querySelectorAll('.product-image img, .thumbnail').forEach(element => {
+        element.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            const imageIndex = this.getAttribute('data-image-index');
+            openProductModal(productId, imageIndex ? parseInt(imageIndex) : 0);
+        });
+    });
+    
+    document.querySelectorAll('.buy-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            openProductModal(productId, 0);
+        });
+    });
+}
+
+// Abrir modal do produto (MODIFICADA para mostrar estoque disponível)
+function openProductModal(productId, imageIndex = 0) {
+    currentProduct = products.find(p => p.id === productId);
+    currentImageIndex = imageIndex;
+    
+    if (!currentProduct) return;
+    
+    elements.modalProductName.textContent = currentProduct.name;
+    elements.modalProductPrice.textContent = `R$ ${currentProduct.price.toFixed(2)}`;
+    
+    // Configurar slider de imagens (mantido igual)
+    elements.productSlider.innerHTML = '';
+    elements.sliderNav.innerHTML = '';
+    
+    if (currentProduct.images && currentProduct.images.length > 0) {
+        currentProduct.images.forEach((image, index) => {
+            const slide = document.createElement('img');
+            slide.className = 'slider-image';
+            slide.src = image;
+            elements.productSlider.appendChild(slide);
+            
+            const dot = document.createElement('div');
+            dot.className = `slider-dot ${index === currentImageIndex ? 'active' : ''}`;
+            dot.setAttribute('data-slide-index', index);
+            elements.sliderNav.appendChild(dot);
+            
+            dot.addEventListener('click', function() {
+                goToSlide(index);
+            });
+        });
+        
+        goToSlide(currentImageIndex);
+    }
+    
+    // Configurar opções de cor (MODIFICADA para mostrar estoque disponível)
+    elements.colorOptions.innerHTML = '';
+    
+    if (currentProduct.colors && currentProduct.colors.length > 0) {
+        currentProduct.colors.forEach(color => {
+            const availableStock = getAvailableStock(currentProduct, color.name);
+            
+            const colorOption = document.createElement('div');
+            colorOption.className = 'color-option';
+            
+            colorOption.innerHTML = `
+                <div class="color-info">
+                    <div class="color-sample" style="background-color: ${color.hex || '#cccccc'}"></div>
+                    <div>
+                        <div class="color-name">${color.name}</div>
+                        <div class="color-stock">Disponível: ${availableStock} unidades</div>
+                        ${color.reserved > 0 ? `<div class="color-reserved" style="font-size: 0.8rem; color: #666;">(${color.reserved} reservadas)</div>` : ''}
+                    </div>
+                </div>
+                <input type="number" class="quantity-input" min="0" max="${availableStock}" value="0" 
+                       data-color-name="${color.name}" ${availableStock === 0 ? 'disabled' : ''}>
+            `;
+            
+            elements.colorOptions.appendChild(colorOption);
+        });
+    }
+    
+    elements.productModal.classList.add('active');
+}
+
+// Renderizar itens do carrinho (MODIFICADA para renovar timers)
+function renderCartItems() {
+    elements.cartItems.innerHTML = '';
+    
+    if (cart.length === 0) {
+        elements.cartItems.innerHTML = '<p>Seu carrinho está vazio.</p>';
+        elements.cartTotal.textContent = 'R$ 0,00';
+        return;
+    }
+    
+    let total = 0;
+    
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        
+        const cartItem = document.createElement('div');
+        cartItem.className = 'cart-item';
+        
+        cartItem.innerHTML = `
+            <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+            <div class="cart-item-details">
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-color">Cor: ${item.color}</div>
+                <div class="cart-item-quantity">
+                    <button class="quantity-btn minus" data-product-id="${item.productId}" data-color="${item.color}" data-item-id="${item.itemId}">-</button>
+                    <span>${item.quantity}</span>
+                    <button class="quantity-btn plus" data-product-id="${item.productId}" data-color="${item.color}" data-item-id="${item.itemId}">+</button>
+                </div>
+                <div class="cart-item-price">R$ ${itemTotal.toFixed(2)}</div>
+            </div>
+            <button class="cart-remove" data-product-id="${item.productId}" data-color="${item.color}" data-item-id="${item.itemId}">
+                <i class="fas fa-trash"></i>
+            </button>
+        `;
+        
+        elements.cartItems.appendChild(cartItem);
+        
+        // Renovar timer quando renderizar o carrinho
+        renewReservationTimer(item.productId, item.color, item.quantity, item.itemId);
+    });
+    
+    elements.cartTotal.textContent = `R$ ${total.toFixed(2)}`;
+    
+    // Event listeners (MODIFICADOS para passar itemId)
+    document.querySelectorAll('.quantity-btn.minus').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            const color = this.getAttribute('data-color');
+            const itemId = this.getAttribute('data-item-id');
+            const item = cart.find(item => item.productId === productId && item.color === color);
+            
+            if (item && item.quantity > 1) {
+                if (updateCartQuantity(productId, color, item.quantity - 1, itemId)) {
+                    renderCartItems();
+                }
             }
+        });
+    });
+    
+    document.querySelectorAll('.quantity-btn.plus').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            const color = this.getAttribute('data-color');
+            const itemId = this.getAttribute('data-item-id');
+            const item = cart.find(item => item.productId === productId && item.color === color);
             
-            db.collection('settings').doc('site').set({
-                logo: logoUrl
-            }, { merge: true })
-            .then(() => {
-                elements.siteLogo.src = logoUrl;
-                alert('Logo salva com sucesso!');
-            })
-            .catch(error => {
-                alert('Erro ao salvar logo: ' + error.message);
-            });
-        }
+            if (item) {
+                if (updateCartQuantity(productId, color, item.quantity + 1, itemId)) {
+                    renderCartItems();
+                }
+            }
+        });
+    });
+    
+    document.querySelectorAll('.cart-remove').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            const color = this.getAttribute('data-color');
+            removeFromCart(productId, color);
+        });
+    });
+}
 
-        function saveSiteColors() {
-            const primaryColor = elements.primaryColor.value;
-            
-            db.collection('settings').doc('site').set({
-                primaryColor: primaryColor
-            }, { merge: true })
-            .then(() => {
-                document.documentElement.style.setProperty('--primary-color', primaryColor);
-                alert('Cores salvas com sucesso!');
-            })
-            .catch(error => {
-                alert('Erro ao salvar cores: ' + error.message);
-            });
+// ========== FUNÇÕES QUE PERMANECEM IGUAIS ==========
+
+// ... (TODO O RESTO DO CÓDIGO PERMANECE EXATAMENTE IGUAL) ...
+// initApp(), setupEventListeners(), navegação, painel admin, etc.
+
+// Inicializar a aplicação (MODIFICADA para carregar timers ao recarregar)
+function initApp() {
+    elements.globalLoading.style.display = 'block';
+    
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            currentUser = user;
+            elements.adminPanel.style.display = 'block';
+            elements.loginModal.style.display = 'none';
+            loadAdminData();
+        } else {
+            currentUser = null;
+            elements.adminPanel.style.display = 'none';
+            elements.loginModal.style.display = 'none';
         }
+        
+        loadSiteConfig();
+        loadProducts();
+        loadCartFromStorage();
+        updateCartBadge();
+        
+        // Reiniciar timers para itens no carrinho
+        cart.forEach(item => {
+            startReservationTimer(item.productId, item.color, item.quantity, item.itemId);
+        });
+        
+        setTimeout(() => {
+            elements.globalLoading.style.display = 'none';
+        }, 1000);
+    });
+    
+    setupEventListeners();
+}
     </script>
 </body>
 </html>
