@@ -1476,20 +1476,21 @@
 
     <!-- Firebase e configuração do app -->
     <script>
-       // Configuração do Firebase
+      // Configuração do Firebase (SEM Storage)
 const firebaseConfig = {
-  apiKey: "AIzaSyAn5SPhZJPqR6IdQecnFnMwLdDm3efy4ko",
-  authDomain: "hellen-moda-fitnes.firebaseapp.com",
-  projectId: "hellen-moda-fitnes",
-  storageBucket: "hellen-moda-fitnes.firebasestorage.app",
-  messagingSenderId: "998940228851",
-  appId: "1:998940228851:web:d4e8d3ac366c26fe9e4b86",
+    apiKey: "AIzaSyAn5SPhZJPqR6IdQecnFnMwLdDm3efy4ko",
+    authDomain: "hellen-moda-fitnes.firebaseapp.com",
+    projectId: "hellen-moda-fitnes",
+    storageBucket: "hellen-moda-fitnes.firebasestorage.app", // Pode manter, mas não usaremos
+    messagingSenderId: "998940228851",
+    appId: "1:998940228851:web:d4e8d3ac366c26fe9e4b86"
 };
-// Inicializar Firebase
+
+// Inicializar Firebase (SEM Storage)
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const storage = firebase.storage();
 const auth = firebase.auth();
+// SEM storage - removemos a inicialização do Storage
 
 // Variáveis globais
 let currentUser = null;
@@ -1497,19 +1498,112 @@ let products = [];
 let cart = [];
 let currentProduct = null;
 let currentImageIndex = 0;
-let reservationTimers = {}; // ← NOVO: Controla as reservas temporárias
+let reservationTimers = {};
 
-// Elementos DOM (mantido igual)
+// Elementos DOM (COMPLETO - mantido igual)
 const elements = {
-    // ... (todo o código de elementos permanece IGUAL) ...
+    // Header
+    siteLogo: document.getElementById('site-logo'),
+    homeBtn: document.getElementById('home-btn'),
+    menuBtn: document.getElementById('menu-btn'),
+    cartBtn: document.getElementById('cart-btn'),
+    cartBadge: document.getElementById('cart-badge'),
+    floatingCartBtn: document.getElementById('floating-cart-btn'),
+    floatingCartBadge: document.getElementById('floating-cart-badge'),
+    
+    // Menu
+    menuOverlay: document.getElementById('menu-overlay'),
+    sideMenu: document.getElementById('side-menu'),
+    menuClose: document.getElementById('menu-close'),
+    menuList: document.querySelectorAll('.menu-list a'),
+    
+    // Conteúdo
+    categoryTitle: document.getElementById('category-title'),
+    productsGrid: document.getElementById('products-grid'),
+    
+    // Modal de produto
+    productModal: document.getElementById('product-modal'),
+    productModalClose: document.getElementById('product-modal-close'),
+    productSlider: document.getElementById('product-slider'),
+    sliderNav: document.getElementById('slider-nav'),
+    modalProductName: document.getElementById('modal-product-name'),
+    modalProductPrice: document.getElementById('modal-product-price'),
+    colorOptions: document.getElementById('color-options'),
+    addToCartBtn: document.getElementById('add-to-cart-btn'),
+    
+    // Carrinho
+    cartModal: document.getElementById('cart-modal'),
+    cartClose: document.getElementById('cart-close'),
+    cartItems: document.getElementById('cart-items'),
+    cartTotal: document.getElementById('cart-total'),
+    checkoutBtn: document.getElementById('checkout-btn'),
+    
+    // Checkout
+    checkoutModal: document.getElementById('checkout-modal'),
+    checkoutClose: document.getElementById('checkout-close'),
+    checkoutItems: document.getElementById('checkout-items'),
+    checkoutTotal: document.getElementById('checkout-total'),
+    checkoutForm: document.getElementById('checkout-form'),
+    
+    // Footer
+    footerPhone: document.getElementById('footer-phone'),
+    footerEmail: document.getElementById('footer-email'),
+    footerInstagram: document.getElementById('footer-instagram'),
+    footerFacebook: document.getElementById('footer-facebook'),
+    adminAccessLink: document.getElementById('admin-access-link'),
+    
+    // Painel administrativo
+    adminPanel: document.getElementById('admin-panel'),
+    adminLogout: document.getElementById('admin-logout'),
+    adminTabs: document.querySelectorAll('.admin-tab'),
+    adminContents: document.querySelectorAll('.admin-content'),
+    adminMessage: document.getElementById('admin-message'),
+    
+    // Configurações
+    siteLogoInput: document.getElementById('site-logo-input'),
+    siteLogoUrl: document.getElementById('site-logo-url'),
+    primaryColor: document.getElementById('primary-color'),
+    primaryColorHex: document.getElementById('primary-color-hex'),
+    secondaryColor: document.getElementById('secondary-color'),
+    secondaryColorHex: document.getElementById('secondary-color-hex'),
+    footerPhoneInput: document.getElementById('footer-phone-input'),
+    footerEmailInput: document.getElementById('footer-email-input'),
+    footerInstagramInput: document.getElementById('footer-instagram-input'),
+    footerFacebookInput: document.getElementById('footer-facebook-input'),
+    saveConfigBtn: document.getElementById('save-config-btn'),
+    
+    // Produtos
+    productName: document.getElementById('product-name'),
+    productPrice: document.getElementById('product-price'),
+    productCategory: document.getElementById('product-category'),
+    productImage1: document.getElementById('product-image1'),
+    productImage1Url: document.getElementById('product-image1-url'),
+    productImage2: document.getElementById('product-image2'),
+    productImage2Url: document.getElementById('product-image2-url'),
+    productImage3: document.getElementById('product-image3'),
+    productImage3Url: document.getElementById('product-image3-url'),
+    colorFields: document.getElementById('color-fields'),
+    addColorBtn: document.getElementById('add-color-btn'),
+    addProductBtn: document.getElementById('add-product-btn'),
+    productsList: document.getElementById('products-list'),
+    
+    // Estoque
+    inventoryLoading: document.getElementById('inventory-loading'),
+    inventoryTable: document.getElementById('inventory-table'),
+    inventoryTbody: document.getElementById('inventory-tbody'),
+    
+    // Login
+    loginModal: document.getElementById('login-modal'),
+    adminEmail: document.getElementById('admin-email'),
+    adminPassword: document.getElementById('admin-password'),
+    loginBtn: document.getElementById('login-btn'),
+    loginMessage: document.getElementById('login-message'),
+    
+    // Loading
+    globalLoading: document.getElementById('global-loading')
 };
 
-// Inicializar a aplicação (mantido igual)
-document.addEventListener('DOMContentLoaded', function() {
-    initApp();
-});
-
-// ========== FUNÇÕES DE RESERVA DE ESTOQUE (NOVAS) ==========
+// ========== FUNÇÕES DE RESERVA DE ESTOQUE (MODIFICADAS) ==========
 
 // Reservar estoque temporariamente
 function reserveStock(productId, colorName, quantity) {
@@ -1573,15 +1667,13 @@ function startReservationTimer(productId, colorName, quantity, itemId) {
         clearTimeout(reservationTimers[timerKey]);
     }
     
-    // Novo timer de 15 minutos (ajuste conforme necessidade)
+    // Novo timer de 15 minutos
     reservationTimers[timerKey] = setTimeout(() => {
         releaseStock(productId, colorName, quantity)
             .then(() => {
                 console.log(`Reserva expirada: ${quantity} ${colorName} do produto ${productId}`);
                 delete reservationTimers[timerKey];
-                
-                // Atualizar lista de produtos se estiver visível
-                loadProducts();
+                loadProducts(); // Atualizar lista de produtos
             })
             .catch(error => {
                 console.error('Erro ao liberar reserva expirada:', error);
@@ -1594,7 +1686,7 @@ function renewReservationTimer(productId, colorName, quantity, itemId) {
     startReservationTimer(productId, colorName, quantity, itemId);
 }
 
-// ========== FUNÇÕES MODIFICADAS ==========
+// ========== FUNÇÕES MODIFICADAS (SEM STORAGE) ==========
 
 // Adicionar ao carrinho (MODIFICADA)
 function addToCart(product, color, quantity) {
@@ -1611,7 +1703,7 @@ function addToCart(product, color, quantity) {
             if (existingItemIndex > -1) {
                 // Atualizar quantidade existente
                 cart[existingItemIndex].quantity += quantity;
-                cart[existingItemIndex].itemId = itemId; // Atualizar ID
+                cart[existingItemIndex].itemId = itemId;
             } else {
                 // Adicionar novo item
                 cart.push({
@@ -1621,7 +1713,7 @@ function addToCart(product, color, quantity) {
                     price: product.price,
                     color: color,
                     quantity: quantity,
-                    image: product.images && product.images.length > 0 ? product.images[0] : ''
+                    image: product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/300x300?text=Sem+Imagem'
                 });
             }
             
@@ -1630,7 +1722,7 @@ function addToCart(product, color, quantity) {
             
             saveCartToStorage();
             updateCartBadge();
-            renderProducts(); // Atualizar estoque exibido
+            loadProducts(); // Atualizar estoque exibido
             
             alert('Produto adicionado ao carrinho! Estoque reservado por 15 minutos.');
         })
@@ -1662,7 +1754,7 @@ function removeFromCart(productId, color) {
                 cart.splice(itemIndex, 1);
                 saveCartToStorage();
                 updateCartBadge();
-                renderProducts(); // Atualizar estoque exibido
+                loadProducts(); // Atualizar estoque exibido
                 
                 if (elements.cartModal.classList.contains('active')) {
                     renderCartItems();
@@ -1686,15 +1778,14 @@ function updateCartQuantity(productId, color, newQuantity, itemId) {
         
         if (difference > 0) {
             // Aumentando quantidade - tentar reservar mais
-            reserveStock(productId, color, difference)
+            return reserveStock(productId, color, difference)
                 .then(() => {
                     cart[itemIndex].quantity = newQuantity;
                     saveCartToStorage();
                     updateCartBadge();
-                    
-                    // Renovar timer
                     renewReservationTimer(productId, color, newQuantity, itemId);
-                    renderProducts(); // Atualizar estoque exibido
+                    loadProducts();
+                    return true;
                 })
                 .catch(error => {
                     alert('Erro: ' + error.message);
@@ -1702,18 +1793,18 @@ function updateCartQuantity(productId, color, newQuantity, itemId) {
                 });
         } else if (difference < 0) {
             // Diminuindo quantidade - liberar o excesso
-            releaseStock(productId, color, -difference)
+            return releaseStock(productId, color, -difference)
                 .then(() => {
                     cart[itemIndex].quantity = newQuantity;
                     saveCartToStorage();
                     updateCartBadge();
-                    
-                    // Renovar timer
                     renewReservationTimer(productId, color, newQuantity, itemId);
-                    renderProducts(); // Atualizar estoque exibido
+                    loadProducts();
+                    return true;
                 })
                 .catch(error => {
                     console.error('Erro ao liberar estoque:', error);
+                    return false;
                 });
         }
         
@@ -1723,133 +1814,119 @@ function updateCartQuantity(productId, color, newQuantity, itemId) {
     return false;
 }
 
-// Finalizar compra (MODIFICADA)
-function submitOrder(e) {
-    e.preventDefault();
+// Adicionar produto (MODIFICADA - SEM UPLOAD DE IMAGENS)
+function addProduct() {
+    // Coletar dados do formulário
+    const productData = {
+        name: elements.productName.value,
+        price: parseFloat(elements.productPrice.value),
+        category: elements.productCategory.value,
+        colors: [],
+        images: [], // Vamos usar URLs diretamente
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
     
-    // Verificar se há itens no carrinho
-    if (cart.length === 0) {
-        alert('Seu carrinho está vazio!');
+    // Validar dados
+    if (!productData.name || !productData.price || productData.price <= 0) {
+        showAdminMessage('Preencha todos os campos obrigatórios!', 'error');
         return;
     }
     
-    // Verificar pedido mínimo
-    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-    if (totalItems < 10) {
-        alert('Pedido mínimo é de 10 peças. Seu pedido atual tem ' + totalItems + ' peças.');
-        return;
-    }
-    
-    // Verificar estoque final antes de confirmar
-    const stockPromises = cart.map(item => {
-        return db.collection('products').doc(item.productId).get()
-            .then(doc => {
-                const product = doc.data();
-                const colorData = product.colors.find(c => c.name === item.color);
-                const availableStock = colorData.stock - (colorData.reserved || 0);
-                
-                if (availableStock < item.quantity) {
-                    throw new Error(`Estoque insuficiente para ${item.name} (${item.color}). Disponível: ${availableStock}`);
-                }
-                
-                return true;
+    // Coletar cores
+    const colorFields = elements.colorFields.querySelectorAll('.form-row');
+    colorFields.forEach(field => {
+        const name = field.querySelector('.color-name').value;
+        const hex = field.querySelector('.color-hex').value;
+        const stock = parseInt(field.querySelector('.color-stock').value) || 0;
+        
+        if (name) {
+            productData.colors.push({
+                name: name,
+                hex: hex,
+                stock: stock,
+                reserved: 0 // Campo novo para reservas
             });
+        }
     });
     
-    Promise.all(stockPromises)
+    if (productData.colors.length === 0) {
+        showAdminMessage('Adicione pelo menos uma cor!', 'error');
+        return;
+    }
+    
+    // Coletar URLs das imagens (SEM UPLOAD - só URLs)
+    if (elements.productImage1Url.value) {
+        productData.images.push(elements.productImage1Url.value);
+    }
+    if (elements.productImage2Url.value) {
+        productData.images.push(elements.productImage2Url.value);
+    }
+    if (elements.productImage3Url.value) {
+        productData.images.push(elements.productImage3Url.value);
+    }
+    
+    // Se não tiver URLs, usar placeholders
+    if (productData.images.length === 0) {
+        productData.images = [
+            'https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=' + encodeURIComponent(productData.name.substring(0, 20)),
+            'https://via.placeholder.com/300x300/4ECDC4/FFFFFF?text=' + encodeURIComponent(productData.name.substring(0, 20)),
+            'https://via.placeholder.com/300x300/45B7D1/FFFFFF?text=' + encodeURIComponent(productData.name.substring(0, 20))
+        ];
+    }
+    
+    // Salvar produto no Firestore (SEM storage)
+    db.collection('products').add(productData)
         .then(() => {
-            // Converter reservas em vendas definitivas
-            const updatePromises = cart.map(item => {
-                return db.collection('products').doc(item.productId).get()
-                    .then(doc => {
-                        const product = doc.data();
-                        const updatedColors = product.colors.map(color => {
-                            if (color.name === item.color) {
-                                return {
-                                    ...color,
-                                    stock: color.stock - item.quantity,
-                                    reserved: Math.max(0, (color.reserved || 0) - item.quantity)
-                                };
-                            }
-                            return color;
-                        });
-                        
-                        return db.collection('products').doc(item.productId).update({
-                            colors: updatedColors
-                        });
-                    });
-            });
+            showAdminMessage('Produto adicionado com sucesso!', 'success');
             
-            return Promise.all(updatePromises);
-        })
-        .then(() => {
-            // Limpar todos os timers
-            Object.keys(reservationTimers).forEach(key => {
-                clearTimeout(reservationTimers[key]);
-            });
-            reservationTimers = {};
+            // Limpar formulário
+            elements.productName.value = '';
+            elements.productPrice.value = '';
+            elements.productImage1.value = '';
+            elements.productImage1Url.value = '';
+            elements.productImage2.value = '';
+            elements.productImage2Url.value = '';
+            elements.productImage3.value = '';
+            elements.productImage3Url.value = '';
+            elements.colorFields.innerHTML = '';
             
-            // Coletar dados do formulário
-            const formData = {
-                name: document.getElementById('customer-name').value,
-                cep: document.getElementById('customer-cep').value,
-                address: document.getElementById('customer-address').value,
-                deliveryType: document.getElementById('delivery-type').value,
-                phone: document.getElementById('customer-phone').value
-            };
+            // Adicionar um campo de cor vazio
+            addColorField();
             
-            // Montar mensagem para WhatsApp
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            let message = `Olá! Gostaria de fazer um pedido:\n\n`;
-            
-            cart.forEach(item => {
-                message += `${item.quantity}x ${item.name} (${item.color}) - R$ ${(item.price * item.quantity).toFixed(2)}\n`;
-            });
-            
-            message += `\nTotal: R$ ${total.toFixed(2)}\n\n`;
-            message += `Dados de entrega:\n`;
-            message += `Nome: ${formData.name}\n`;
-            message += `CEP: ${formData.cep}\n`;
-            message += `Endereço: ${formData.address}\n`;
-            message += `Tipo de entrega: ${formData.deliveryType}\n`;
-            message += `Telefone: ${formData.phone}\n\n`;
-            message += `Forma de pagamento: PIX`;
-            
-            // Abrir WhatsApp
-            const encodedMessage = encodeURIComponent(message);
-            const whatsappNumber = '5585989408154'; // Substitua pelo número real
-            window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
-            
-            // Limpar carrinho
-            cart = [];
-            saveCartToStorage();
-            updateCartBadge();
-            renderProducts(); // Atualizar estoque exibido
-            
-            // Fechar modais
-            closeCheckout();
-            closeCart();
-            
-            alert('Pedido enviado com sucesso! Estoque atualizado.');
+            // Recarregar lista de produtos
+            loadProducts();
+            loadProductsList();
         })
         .catch(error => {
-            alert('Erro ao finalizar pedido: ' + error.message);
+            console.error('Erro ao adicionar produto:', error);
+            showAdminMessage('Erro ao adicionar produto: ' + error.message, 'error');
         });
 }
 
-// ========== FUNÇÕES AUXILIARES MODIFICADAS ==========
+// ========== FUNÇÕES DE PRODUTOS (MODIFICADAS) ==========
 
-// Calcular estoque disponível para exibição
-function getAvailableStock(product, colorName) {
-    const color = product.colors.find(c => c.name === colorName);
-    if (color) {
-        return color.stock - (color.reserved || 0);
-    }
-    return 0;
+// Carregar produtos do Firestore
+function loadProducts() {
+    db.collection('products').orderBy('createdAt', 'desc').limit(50).get()
+        .then((querySnapshot) => {
+            products = [];
+            querySnapshot.forEach((doc) => {
+                products.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+            renderProducts('all');
+        })
+        .catch((error) => {
+            console.error('Erro ao carregar produtos:', error);
+        });
 }
 
-// Renderizar produtos (MODIFICADA para mostrar estoque disponível)
+// Renderizar produtos na grade
 function renderProducts(category) {
+    if (!elements.productsGrid) return;
+    
     elements.productsGrid.innerHTML = '';
     
     let filteredProducts = products;
@@ -1874,7 +1951,7 @@ function renderProducts(category) {
             </div>
             <div class="product-thumbnails">
                 ${product.images && product.images.length > 0 ? 
-                    product.images.map((img, index) => 
+                    product.images.slice(0, 3).map((img, index) => 
                         `<img src="${img}" class="thumbnail ${index === 0 ? 'active' : ''}" data-product-id="${product.id}" data-image-index="${index}">`
                     ).join('') 
                     : ''
@@ -1890,21 +1967,32 @@ function renderProducts(category) {
         elements.productsGrid.appendChild(productCard);
     });
     
-    // Event listeners (mantido igual)
-    document.querySelectorAll('.product-image img, .thumbnail').forEach(element => {
-        element.addEventListener('click', function() {
-            const productId = this.getAttribute('data-product-id');
-            const imageIndex = this.getAttribute('data-image-index');
-            openProductModal(productId, imageIndex ? parseInt(imageIndex) : 0);
+    // Adicionar event listeners para as imagens e botões
+    setTimeout(() => {
+        document.querySelectorAll('.product-image img, .thumbnail').forEach(element => {
+            element.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                const imageIndex = this.getAttribute('data-image-index');
+                openProductModal(productId, imageIndex ? parseInt(imageIndex) : 0);
+            });
         });
-    });
-    
-    document.querySelectorAll('.buy-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const productId = this.getAttribute('data-product-id');
-            openProductModal(productId, 0);
+        
+        document.querySelectorAll('.buy-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                openProductModal(productId, 0);
+            });
         });
-    });
+    }, 100);
+}
+
+// Calcular estoque disponível para exibição
+function getAvailableStock(product, colorName) {
+    const color = product.colors.find(c => c.name === colorName);
+    if (color) {
+        return color.stock - (color.reserved || 0);
+    }
+    return 0;
 }
 
 // Abrir modal do produto (MODIFICADA para mostrar estoque disponível)
@@ -1917,7 +2005,7 @@ function openProductModal(productId, imageIndex = 0) {
     elements.modalProductName.textContent = currentProduct.name;
     elements.modalProductPrice.textContent = `R$ ${currentProduct.price.toFixed(2)}`;
     
-    // Configurar slider de imagens (mantido igual)
+    // Configurar slider de imagens
     elements.productSlider.innerHTML = '';
     elements.sliderNav.innerHTML = '';
     
@@ -1957,7 +2045,7 @@ function openProductModal(productId, imageIndex = 0) {
                     <div>
                         <div class="color-name">${color.name}</div>
                         <div class="color-stock">Disponível: ${availableStock} unidades</div>
-                        ${color.reserved > 0 ? `<div class="color-reserved" style="font-size: 0.8rem; color: #666;">(${color.reserved} reservadas)</div>` : ''}
+                        ${(color.reserved || 0) > 0 ? `<div class="color-reserved" style="font-size: 0.8rem; color: #666;">(${color.reserved} reservadas)</div>` : ''}
                     </div>
                 </div>
                 <input type="number" class="quantity-input" min="0" max="${availableStock}" value="0" 
@@ -1969,10 +2057,105 @@ function openProductModal(productId, imageIndex = 0) {
     }
     
     elements.productModal.classList.add('active');
+    
+    // Adicionar event listeners para navegação por swipe
+    let startX = 0;
+    let endX = 0;
+    
+    elements.productSlider.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    });
+    
+    elements.productSlider.addEventListener('touchend', (e) => {
+        endX = e.changedTouches[0].clientX;
+        handleSwipe();
+    });
+    
+    function handleSwipe() {
+        const diff = startX - endX;
+        const threshold = 50;
+        
+        if (Math.abs(diff) > threshold) {
+            if (diff > 0 && currentImageIndex < currentProduct.images.length - 1) {
+                goToSlide(currentImageIndex + 1);
+            } else if (diff < 0 && currentImageIndex > 0) {
+                goToSlide(currentImageIndex - 1);
+            }
+        }
+    }
 }
 
-// Renderizar itens do carrinho (MODIFICADA para renovar timers)
+// Navegar para um slide específico
+function goToSlide(index) {
+    if (!currentProduct || !currentProduct.images) return;
+    
+    currentImageIndex = index;
+    const slideWidth = 100 / currentProduct.images.length;
+    elements.productSlider.style.transform = `translateX(-${index * slideWidth}%)`;
+    
+    // Atualizar dots de navegação
+    document.querySelectorAll('.slider-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+    });
+}
+
+// Fechar modal do produto
+function closeProductModal() {
+    elements.productModal.classList.remove('active');
+    currentProduct = null;
+    currentImageIndex = 0;
+}
+
+// ========== CARRINHO E CHECKOUT (MODIFICADAS) ==========
+
+// Adicionar produto ao carrinho a partir do modal
+function addToCartFromModal() {
+    if (!currentProduct) return;
+    
+    const colorQuantities = [];
+    let hasItems = false;
+    
+    // Coletar quantidades por cor
+    document.querySelectorAll('.color-option').forEach(option => {
+        const colorName = option.querySelector('.quantity-input').getAttribute('data-color-name');
+        const quantity = parseInt(option.querySelector('.quantity-input').value);
+        
+        if (quantity > 0) {
+            colorQuantities.push({
+                color: colorName,
+                quantity: quantity
+            });
+            hasItems = true;
+        }
+    });
+    
+    if (!hasItems) {
+        alert('Selecione pelo menos uma cor e quantidade!');
+        return;
+    }
+    
+    // Verificar se há estoque suficiente
+    for (const item of colorQuantities) {
+        const availableStock = getAvailableStock(currentProduct, item.color);
+        if (availableStock < item.quantity) {
+            alert(`Estoque insuficiente para a cor ${item.color}! Disponível: ${availableStock}`);
+            return;
+        }
+    }
+    
+    // Adicionar ao carrinho
+    colorQuantities.forEach(item => {
+        addToCart(currentProduct, item.color, item.quantity);
+    });
+    
+    // Fechar o modal
+    closeProductModal();
+}
+
+// Renderizar itens do carrinho
 function renderCartItems() {
+    if (!elements.cartItems) return;
+    
     elements.cartItems.innerHTML = '';
     
     if (cart.length === 0) {
@@ -2008,72 +2191,265 @@ function renderCartItems() {
         `;
         
         elements.cartItems.appendChild(cartItem);
-        
-        // Renovar timer quando renderizar o carrinho
-        renewReservationTimer(item.productId, item.color, item.quantity, item.itemId);
     });
     
     elements.cartTotal.textContent = `R$ ${total.toFixed(2)}`;
     
-    // Event listeners (MODIFICADOS para passar itemId)
-    document.querySelectorAll('.quantity-btn.minus').forEach(button => {
-        button.addEventListener('click', function() {
-            const productId = this.getAttribute('data-product-id');
-            const color = this.getAttribute('data-color');
-            const itemId = this.getAttribute('data-item-id');
-            const item = cart.find(item => item.productId === productId && item.color === color);
-            
-            if (item && item.quantity > 1) {
-                if (updateCartQuantity(productId, color, item.quantity - 1, itemId)) {
-                    renderCartItems();
+    // Adicionar event listeners
+    setTimeout(() => {
+        document.querySelectorAll('.quantity-btn.minus').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                const color = this.getAttribute('data-color');
+                const itemId = this.getAttribute('data-item-id');
+                const item = cart.find(item => item.productId === productId && item.color === color);
+                
+                if (item && item.quantity > 1) {
+                    if (updateCartQuantity(productId, color, item.quantity - 1, itemId)) {
+                        renderCartItems();
+                    }
                 }
-            }
+            });
         });
+        
+        document.querySelectorAll('.quantity-btn.plus').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                const color = this.getAttribute('data-color');
+                const itemId = this.getAttribute('data-item-id');
+                const item = cart.find(item => item.productId === productId && item.color === color);
+                
+                if (item) {
+                    if (updateCartQuantity(productId, color, item.quantity + 1, itemId)) {
+                        renderCartItems();
+                    }
+                }
+            });
+        });
+        
+        document.querySelectorAll('.cart-remove').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                const color = this.getAttribute('data-color');
+                removeFromCart(productId, color);
+            });
+        });
+    }, 100);
+}
+
+// Finalizar compra (MODIFICADA)
+function submitOrder(e) {
+    e.preventDefault();
+    
+    // Verificar se há itens no carrinho
+    if (cart.length === 0) {
+        alert('Seu carrinho está vazio!');
+        return;
+    }
+    
+    // Verificar pedido mínimo
+    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+    if (totalItems < 10) {
+        alert('Pedido mínimo é de 10 peças. Seu pedido atual tem ' + totalItems + ' peças.');
+        return;
+    }
+    
+    // Coletar dados do formulário
+    const formData = {
+        name: document.getElementById('customer-name').value,
+        cep: document.getElementById('customer-cep').value,
+        address: document.getElementById('customer-address').value,
+        deliveryType: document.getElementById('delivery-type').value,
+        phone: document.getElementById('customer-phone').value
+    };
+    
+    // Validar dados
+    if (!formData.name || !formData.cep || !formData.address || !formData.deliveryType || !formData.phone) {
+        alert('Por favor, preencha todos os campos obrigatórios!');
+        return;
+    }
+    
+    // Verificar estoque final antes de confirmar
+    const stockPromises = cart.map(item => {
+        return db.collection('products').doc(item.productId).get()
+            .then(doc => {
+                const product = doc.data();
+                const colorData = product.colors.find(c => c.name === item.color);
+                const availableStock = colorData.stock - (colorData.reserved || 0);
+                
+                if (availableStock < item.quantity) {
+                    throw new Error(`Estoque insuficiente para ${item.name} (${item.color}). Disponível: ${availableStock}`);
+                }
+                return true;
+            });
     });
     
-    document.querySelectorAll('.quantity-btn.plus').forEach(button => {
-        button.addEventListener('click', function() {
-            const productId = this.getAttribute('data-product-id');
-            const color = this.getAttribute('data-color');
-            const itemId = this.getAttribute('data-item-id');
-            const item = cart.find(item => item.productId === productId && item.color === color);
+    Promise.all(stockPromises)
+        .then(() => {
+            // Converter reservas em vendas definitivas
+            const updatePromises = cart.map(item => {
+                return db.collection('products').doc(item.productId).get()
+                    .then(doc => {
+                        const product = doc.data();
+                        const updatedColors = product.colors.map(color => {
+                            if (color.name === item.color) {
+                                return {
+                                    ...color,
+                                    stock: color.stock - item.quantity,
+                                    reserved: Math.max(0, (color.reserved || 0) - item.quantity)
+                                };
+                            }
+                            return color;
+                        });
+                        
+                        return db.collection('products').doc(item.productId).update({
+                            colors: updatedColors
+                        });
+                    });
+            });
             
-            if (item) {
-                if (updateCartQuantity(productId, color, item.quantity + 1, itemId)) {
-                    renderCartItems();
-                }
-            }
+            return Promise.all(updatePromises);
+        })
+        .then(() => {
+            // Limpar todos os timers
+            Object.keys(reservationTimers).forEach(key => {
+                clearTimeout(reservationTimers[key]);
+            });
+            reservationTimers = {};
+            
+            // Montar mensagem para WhatsApp
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let message = `Olá! Gostaria de fazer um pedido:\n\n`;
+            
+            cart.forEach(item => {
+                message += `${item.quantity}x ${item.name} (${item.color}) - R$ ${(item.price * item.quantity).toFixed(2)}\n`;
+            });
+            
+            message += `\nTotal: R$ ${total.toFixed(2)}\n\n`;
+            message += `Dados de entrega:\n`;
+            message += `Nome: ${formData.name}\n`;
+            message += `CEP: ${formData.cep}\n`;
+            message += `Endereço: ${formData.address}\n`;
+            message += `Tipo de entrega: ${formData.deliveryType}\n`;
+            message += `Telefone: ${formData.phone}\n\n`;
+            message += `Forma de pagamento: PIX`;
+            
+            // Abrir WhatsApp
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappNumber = '5599999999999'; // SUBSTITUA pelo número real
+            window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
+            
+            // Limpar carrinho
+            cart = [];
+            saveCartToStorage();
+            updateCartBadge();
+            loadProducts(); // Atualizar estoque exibido
+            
+            // Fechar modais
+            closeCheckout();
+            closeCart();
+            
+            alert('Pedido enviado com sucesso! Estoque atualizado.');
+        })
+        .catch(error => {
+            alert('Erro ao finalizar pedido: ' + error.message);
         });
-    });
+}
+
+// ========== PAINEL ADMINISTRATIVO (MODIFICADO) ==========
+
+// Adicionar campo de cor no formulário de produto
+function addColorField() {
+    const colorField = document.createElement('div');
+    colorField.className = 'form-row';
+    colorField.innerHTML = `
+        <div class="form-col">
+            <input type="text" class="form-input color-name" placeholder="Nome da cor">
+        </div>
+        <div class="form-col">
+            <input type="color" class="color-input color-hex" value="#cccccc">
+        </div>
+        <div class="form-col">
+            <input type="number" class="form-input color-stock" placeholder="Estoque" min="0" value="10">
+        </div>
+        <div class="form-col">
+            <button type="button" class="admin-btn secondary remove-color-btn">Remover</button>
+        </div>
+    `;
     
-    document.querySelectorAll('.cart-remove').forEach(button => {
-        button.addEventListener('click', function() {
-            const productId = this.getAttribute('data-product-id');
-            const color = this.getAttribute('data-color');
-            removeFromCart(productId, color);
-        });
+    elements.colorFields.appendChild(colorField);
+    
+    // Adicionar event listener para o botão de remover
+    colorField.querySelector('.remove-color-btn').addEventListener('click', function() {
+        colorField.remove();
     });
+}
+
+// Carregar lista de produtos no painel admin
+function loadProductsList() {
+    if (!elements.productsList) return;
+    
+    elements.productsList.innerHTML = '<p>Carregando...</p>';
+    
+    db.collection('products').orderBy('createdAt', 'desc').get()
+        .then(querySnapshot => {
+            elements.productsList.innerHTML = '';
+            
+            if (querySnapshot.empty) {
+                elements.productsList.innerHTML = '<p>Nenhum produto cadastrado.</p>';
+                return;
+            }
+            
+            querySnapshot.forEach(doc => {
+                const product = {
+                    id: doc.id,
+                    ...doc.data()
+                };
+                
+                const productItem = document.createElement('div');
+                productItem.className = 'admin-form';
+                productItem.innerHTML = `
+                    <h4>${product.name} - R$ ${product.price.toFixed(2)}</h4>
+                    <p>Categoria: ${product.category}</p>
+                    <p>Cores: ${product.colors.map(c => c.name).join(', ')}</p>
+                    <button class="admin-btn secondary delete-product-btn" data-product-id="${product.id}">Excluir</button>
+                `;
+                
+                elements.productsList.appendChild(productItem);
+            });
+            
+            // Adicionar event listeners para os botões de excluir
+            document.querySelectorAll('.delete-product-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    if (confirm('Tem certeza que deseja excluir este produto?')) {
+                        deleteProduct(productId);
+                    }
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao carregar produtos:', error);
+            elements.productsList.innerHTML = '<p>Erro ao carregar produtos.</p>';
+        });
 }
 
 // ========== FUNÇÕES QUE PERMANECEM IGUAIS ==========
 
-// ... (TODO O RESTO DO CÓDIGO PERMANECE EXATAMENTE IGUAL) ...
-// initApp(), setupEventListeners(), navegação, painel admin, etc.
-
-// Inicializar a aplicação (MODIFICADA para carregar timers ao recarregar)
+// Inicializar a aplicação
 function initApp() {
-    elements.globalLoading.style.display = 'block';
+    if (elements.globalLoading) elements.globalLoading.style.display = 'block';
     
     auth.onAuthStateChanged((user) => {
         if (user) {
             currentUser = user;
-            elements.adminPanel.style.display = 'block';
-            elements.loginModal.style.display = 'none';
+            if (elements.adminPanel) elements.adminPanel.style.display = 'block';
+            if (elements.loginModal) elements.loginModal.style.display = 'none';
             loadAdminData();
         } else {
             currentUser = null;
-            elements.adminPanel.style.display = 'none';
-            elements.loginModal.style.display = 'none';
+            if (elements.adminPanel) elements.adminPanel.style.display = 'none';
+            if (elements.loginModal) elements.loginModal.style.display = 'none';
         }
         
         loadSiteConfig();
@@ -2087,11 +2463,562 @@ function initApp() {
         });
         
         setTimeout(() => {
-            elements.globalLoading.style.display = 'none';
+            if (elements.globalLoading) elements.globalLoading.style.display = 'none';
         }, 1000);
     });
     
     setupEventListeners();
+}
+
+// Configurar todos os event listeners
+function setupEventListeners() {
+    // Navegação
+    if (elements.homeBtn) elements.homeBtn.addEventListener('click', goToHome);
+    if (elements.menuBtn) elements.menuBtn.addEventListener('click', openMenu);
+    if (elements.menuClose) elements.menuClose.addEventListener('click', closeMenu);
+    if (elements.menuOverlay) elements.menuOverlay.addEventListener('click', closeMenu);
+    
+    // Carrinho
+    if (elements.cartBtn) elements.cartBtn.addEventListener('click', openCart);
+    if (elements.floatingCartBtn) elements.floatingCartBtn.addEventListener('click', openCart);
+    if (elements.cartClose) elements.cartClose.addEventListener('click', closeCart);
+    if (elements.checkoutBtn) elements.checkoutBtn.addEventListener('click', openCheckout);
+    
+    // Modal de produto
+    if (elements.productModalClose) elements.productModalClose.addEventListener('click', closeProductModal);
+    if (elements.addToCartBtn) elements.addToCartBtn.addEventListener('click', addToCartFromModal);
+    
+    // Checkout
+    if (elements.checkoutClose) elements.checkoutClose.addEventListener('click', closeCheckout);
+    if (elements.checkoutForm) elements.checkoutForm.addEventListener('submit', submitOrder);
+    
+    // Menu de categorias
+    if (elements.menuList) {
+        elements.menuList.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const category = this.getAttribute('data-category');
+                filterProductsByCategory(category);
+                closeMenu();
+            });
+        });
+    }
+    
+    // Painel administrativo
+    if (elements.adminAccessLink) {
+        elements.adminAccessLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (elements.loginModal) elements.loginModal.style.display = 'flex';
+        });
+    }
+    
+    if (elements.adminLogout) elements.adminLogout.addEventListener('click', logout);
+    
+    // Tabs do admin
+    if (elements.adminTabs) {
+        elements.adminTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                switchAdminTab(tabId);
+            });
+        });
+    }
+    
+    // Configurações de cor
+    if (elements.primaryColor && elements.primaryColorHex) {
+        elements.primaryColor.addEventListener('input', function() {
+            elements.primaryColorHex.value = this.value;
+        });
+        elements.primaryColorHex.addEventListener('input', function() {
+            elements.primaryColor.value = this.value;
+        });
+    }
+    
+    if (elements.secondaryColor && elements.secondaryColorHex) {
+        elements.secondaryColor.addEventListener('input', function() {
+            elements.secondaryColorHex.value = this.value;
+        });
+        elements.secondaryColorHex.addEventListener('input', function() {
+            elements.secondaryColor.value = this.value;
+        });
+    }
+    
+    // Botões do admin
+    if (elements.saveConfigBtn) elements.saveConfigBtn.addEventListener('click', saveSiteConfig);
+    if (elements.addColorBtn) elements.addColorBtn.addEventListener('click', addColorField);
+    if (elements.addProductBtn) elements.addProductBtn.addEventListener('click', addProduct);
+    
+    // Login
+    if (elements.loginBtn) elements.loginBtn.addEventListener('click', login);
+}
+
+// ... (CONTINUA - PRÓXIMA MENSAGEM COM O RESTO DO CÓDIGO) ...
+        // ========== FUNÇÕES DE NAVEGAÇÃO (IGUAIS) ==========
+
+function goToHome() {
+    filterProductsByCategory('all');
+}
+
+function openMenu() {
+    if (elements.sideMenu) elements.sideMenu.classList.add('active');
+    if (elements.menuOverlay) elements.menuOverlay.classList.add('active');
+}
+
+function closeMenu() {
+    if (elements.sideMenu) elements.sideMenu.classList.remove('active');
+    if (elements.menuOverlay) elements.menuOverlay.classList.remove('active');
+}
+
+function openCart() {
+    if (elements.cartModal) {
+        elements.cartModal.classList.add('active');
+        renderCartItems();
+    }
+}
+
+function closeCart() {
+    if (elements.cartModal) elements.cartModal.classList.remove('active');
+}
+
+function openCheckout() {
+    if (cart.length === 0) {
+        alert('Seu carrinho está vazio!');
+        return;
+    }
+    
+    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+    if (totalItems < 10) {
+        alert('Pedido mínimo é de 10 peças. Seu pedido atual tem ' + totalItems + ' peças.');
+        return;
+    }
+    
+    if (elements.checkoutModal) {
+        elements.checkoutModal.classList.add('active');
+        renderCheckoutItems();
+    }
+}
+
+function closeCheckout() {
+    if (elements.checkoutModal) elements.checkoutModal.classList.remove('active');
+}
+
+// ========== FUNÇÕES AUXILIARES (MODIFICADAS) ==========
+
+// Filtrar produtos por categoria
+function filterProductsByCategory(category) {
+    let categoryName = 'Todos os produtos';
+    
+    switch(category) {
+        case 'conjuntos': categoryName = 'Conjuntos'; break;
+        case 'macaquinhos': categoryName = 'Macaquinhos'; break;
+        case 'tops': categoryName = 'Tops'; break;
+        case 'shorts': categoryName = 'Shorts'; break;
+    }
+    
+    if (elements.categoryTitle) elements.categoryTitle.textContent = categoryName;
+    renderProducts(category);
+}
+
+// Renderizar itens no checkout
+function renderCheckoutItems() {
+    if (!elements.checkoutItems) return;
+    
+    elements.checkoutItems.innerHTML = '';
+    
+    if (cart.length === 0) return;
+    
+    let total = 0;
+    
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        
+        const checkoutItem = document.createElement('div');
+        checkoutItem.className = 'checkout-item';
+        
+        checkoutItem.innerHTML = `
+            <span>${item.quantity}x ${item.name} (${item.color})</span>
+            <span>R$ ${itemTotal.toFixed(2)}</span>
+        `;
+        
+        elements.checkoutItems.appendChild(checkoutItem);
+    });
+    
+    if (elements.checkoutTotal) elements.checkoutTotal.textContent = `R$ ${total.toFixed(2)}`;
+}
+
+// Atualizar badge do carrinho
+function updateCartBadge() {
+    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+    if (elements.cartBadge) elements.cartBadge.textContent = totalItems;
+    if (elements.floatingCartBadge) elements.floatingCartBadge.textContent = totalItems;
+}
+
+// Salvar carrinho no sessionStorage
+function saveCartToStorage() {
+    sessionStorage.setItem('hellen-cart', JSON.stringify(cart));
+}
+
+// Carregar carrinho do sessionStorage
+function loadCartFromStorage() {
+    const savedCart = sessionStorage.getItem('hellen-cart');
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+    } else {
+        cart = [];
+    }
+}
+
+// ========== PAINEL ADMINISTRATIVO (CONTINUAÇÃO) ==========
+
+// Alternar entre abas do admin
+function switchAdminTab(tabId) {
+    if (!elements.adminTabs || !elements.adminContents) return;
+    
+    elements.adminTabs.forEach(tab => tab.classList.remove('active'));
+    elements.adminContents.forEach(content => content.classList.remove('active'));
+    
+    const activeTab = document.querySelector(`.admin-tab[data-tab="${tabId}"]`);
+    const activeContent = document.getElementById(`${tabId}-content`);
+    
+    if (activeTab) activeTab.classList.add('active');
+    if (activeContent) activeContent.classList.add('active');
+    
+    if (tabId === 'inventory') {
+        loadInventoryData();
+    } else if (tabId === 'products') {
+        loadProductsList();
+    }
+}
+
+// Carregar dados do admin
+function loadAdminData() {
+    loadSiteConfig();
+    loadProductsList();
+}
+
+// Carregar configurações do site
+function loadSiteConfig() {
+    db.collection('siteConfig').doc('config').get()
+        .then(doc => {
+            if (doc.exists) {
+                const config = doc.data();
+                
+                // Aplicar configurações
+                if (config.logo && elements.siteLogo) {
+                    elements.siteLogo.src = config.logo;
+                }
+                
+                if (config.primaryColor) {
+                    document.documentElement.style.setProperty('--primary-color', config.primaryColor);
+                    if (elements.primaryColor) elements.primaryColor.value = config.primaryColor;
+                    if (elements.primaryColorHex) elements.primaryColorHex.value = config.primaryColor;
+                }
+                
+                if (config.secondaryColor) {
+                    document.documentElement.style.setProperty('--secondary-color', config.secondaryColor);
+                    if (elements.secondaryColor) elements.secondaryColor.value = config.secondaryColor;
+                    if (elements.secondaryColorHex) elements.secondaryColorHex.value = config.secondaryColor;
+                }
+                
+                // Informações de contato
+                if (config.contact) {
+                    if (config.contact.phone && elements.footerPhone && elements.footerPhoneInput) {
+                        elements.footerPhone.textContent = `Telefone: ${config.contact.phone}`;
+                        elements.footerPhoneInput.value = config.contact.phone;
+                    }
+                    
+                    if (config.contact.email && elements.footerEmail && elements.footerEmailInput) {
+                        elements.footerEmail.textContent = `Email: ${config.contact.email}`;
+                        elements.footerEmailInput.value = config.contact.email;
+                    }
+                    
+                    if (config.contact.instagram && elements.footerInstagram && elements.footerInstagramInput) {
+                        elements.footerInstagram.href = config.contact.instagram;
+                        elements.footerInstagramInput.value = config.contact.instagram;
+                    }
+                    
+                    if (config.contact.facebook && elements.footerFacebook && elements.footerFacebookInput) {
+                        elements.footerFacebook.href = config.contact.facebook;
+                        elements.footerFacebookInput.value = config.contact.facebook;
+                    }
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar configurações:', error);
+        });
+}
+
+// Salvar configurações do site (MODIFICADA - SEM UPLOAD DE IMAGENS)
+function saveSiteConfig() {
+    const config = {
+        logo: elements.siteLogoUrl ? elements.siteLogoUrl.value : '',
+        primaryColor: elements.primaryColor ? elements.primaryColor.value : '#e91e63',
+        secondaryColor: elements.secondaryColor ? elements.secondaryColor.value : '#9c27b0',
+        contact: {
+            phone: elements.footerPhoneInput ? elements.footerPhoneInput.value : '',
+            email: elements.footerEmailInput ? elements.footerEmailInput.value : '',
+            instagram: elements.footerInstagramInput ? elements.footerInstagramInput.value : '',
+            facebook: elements.footerFacebookInput ? elements.footerFacebookInput.value : ''
+        },
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    // Se tiver arquivo de logo, usar data URL (SEM storage)
+    if (elements.siteLogoInput && elements.siteLogoInput.files.length > 0) {
+        const file = elements.siteLogoInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            config.logo = e.target.result;
+            saveConfigToFirestore(config);
+        };
+        
+        reader.readAsDataURL(file);
+    } else {
+        saveConfigToFirestore(config);
+    }
+}
+
+// Salvar configurações no Firestore
+function saveConfigToFirestore(config) {
+    db.collection('siteConfig').doc('config').set(config, { merge: true })
+        .then(() => {
+            // Aplicar as novas configurações imediatamente
+            if (config.logo && elements.siteLogo) {
+                elements.siteLogo.src = config.logo;
+            }
+            
+            if (config.primaryColor) {
+                document.documentElement.style.setProperty('--primary-color', config.primaryColor);
+            }
+            
+            if (config.secondaryColor) {
+                document.documentElement.style.setProperty('--secondary-color', config.secondaryColor);
+            }
+            
+            if (config.contact) {
+                if (config.contact.phone && elements.footerPhone) {
+                    elements.footerPhone.textContent = `Telefone: ${config.contact.phone}`;
+                }
+                
+                if (config.contact.email && elements.footerEmail) {
+                    elements.footerEmail.textContent = `Email: ${config.contact.email}`;
+                }
+                
+                if (config.contact.instagram && elements.footerInstagram) {
+                    elements.footerInstagram.href = config.contact.instagram;
+                }
+                
+                if (config.contact.facebook && elements.footerFacebook) {
+                    elements.footerFacebook.href = config.contact.facebook;
+                }
+            }
+            
+            showAdminMessage('Configurações salvas com sucesso!', 'success');
+        })
+        .catch(error => {
+            console.error('Erro ao salvar configurações:', error);
+            showAdminMessage('Erro ao salvar configurações.', 'error');
+        });
+}
+
+// Excluir produto
+function deleteProduct(productId) {
+    db.collection('products').doc(productId).delete()
+        .then(() => {
+            showAdminMessage('Produto excluído com sucesso!', 'success');
+            loadProducts();
+            loadProductsList();
+        })
+        .catch(error => {
+            console.error('Erro ao excluir produto:', error);
+            showAdminMessage('Erro ao excluir produto.', 'error');
+        });
+}
+
+// Carregar dados de estoque
+function loadInventoryData() {
+    if (!elements.inventoryLoading || !elements.inventoryTbody) return;
+    
+    elements.inventoryLoading.style.display = 'block';
+    elements.inventoryTbody.innerHTML = '';
+    
+    db.collection('products').get()
+        .then(querySnapshot => {
+            elements.inventoryLoading.style.display = 'none';
+            
+            if (querySnapshot.empty) {
+                elements.inventoryTbody.innerHTML = '<tr><td colspan="5">Nenhum produto cadastrado.</td></tr>';
+                return;
+            }
+            
+            querySnapshot.forEach(doc => {
+                const product = {
+                    id: doc.id,
+                    ...doc.data()
+                };
+                
+                product.colors.forEach(color => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${product.name}</td>
+                        <td>
+                            <div class="color-info">
+                                <div class="color-sample" style="background-color: ${color.hex || '#cccccc'}"></div>
+                                <span>${color.name}</span>
+                            </div>
+                        </td>
+                        <td>${color.stock}</td>
+                        <td>
+                            <input type="number" class="stock-input" min="0" value="${color.stock}" data-product-id="${product.id}" data-color-name="${color.name}">
+                        </td>
+                        <td>
+                            <button class="save-stock-btn" data-product-id="${product.id}" data-color-name="${color.name}">Salvar</button>
+                        </td>
+                    `;
+                    
+                    elements.inventoryTbody.appendChild(row);
+                });
+            });
+            
+            // Adicionar event listeners para os botões de salvar
+            document.querySelectorAll('.save-stock-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    const colorName = this.getAttribute('data-color-name');
+                    const newStock = parseInt(this.closest('tr').querySelector('.stock-input').value);
+                    
+                    updateStockManually(productId, colorName, newStock);
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao carregar estoque:', error);
+            elements.inventoryLoading.style.display = 'none';
+            elements.inventoryTbody.innerHTML = '<tr><td colspan="5">Erro ao carregar estoque.</td></tr>';
+        });
+}
+
+// Atualizar estoque manualmente (pelo admin)
+function updateStockManually(productId, colorName, newStock) {
+    db.collection('products').doc(productId).get()
+        .then(doc => {
+            if (doc.exists) {
+                const product = doc.data();
+                const updatedColors = product.colors.map(color => {
+                    if (color.name === colorName) {
+                        return {
+                            ...color,
+                            stock: newStock
+                        };
+                    }
+                    return color;
+                });
+                
+                return db.collection('products').doc(productId).update({
+                    colors: updatedColors
+                });
+            }
+        })
+        .then(() => {
+            showAdminMessage('Estoque atualizado com sucesso!', 'success');
+            loadInventoryData(); // Recarregar a tabela
+            loadProducts(); // Atualizar a exibição de produtos
+        })
+        .catch(error => {
+            console.error('Erro ao atualizar estoque:', error);
+            showAdminMessage('Erro ao atualizar estoque.', 'error');
+        });
+}
+
+// Mostrar mensagem no painel admin
+function showAdminMessage(message, type) {
+    if (!elements.adminMessage) return;
+    
+    elements.adminMessage.textContent = message;
+    elements.adminMessage.className = `message ${type}`;
+    elements.adminMessage.style.display = 'block';
+    
+    setTimeout(() => {
+        elements.adminMessage.style.display = 'none';
+    }, 5000);
+}
+
+// ========== AUTENTICAÇÃO (MODIFICADA) ==========
+
+// Fazer login
+function login() {
+    if (!elements.adminEmail || !elements.adminPassword) return;
+    
+    const email = elements.adminEmail.value;
+    const password = elements.adminPassword.value;
+    
+    if (!email || !password) {
+        showLoginMessage('Preencha todos os campos!', 'error');
+        return;
+    }
+    
+    auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            currentUser = userCredential.user;
+            if (elements.loginModal) elements.loginModal.style.display = 'none';
+            if (elements.adminPanel) elements.adminPanel.style.display = 'block';
+            loadAdminData();
+        })
+        .catch((error) => {
+            console.error('Erro no login:', error);
+            showLoginMessage('Email ou senha incorretos!', 'error');
+        });
+}
+
+// Fazer logout
+function logout() {
+    auth.signOut()
+        .then(() => {
+            currentUser = null;
+            if (elements.adminPanel) elements.adminPanel.style.display = 'none';
+        })
+        .catch((error) => {
+            console.error('Erro no logout:', error);
+        });
+}
+
+// Mostrar mensagem de login
+function showLoginMessage(message, type) {
+    if (!elements.loginMessage) return;
+    
+    elements.loginMessage.textContent = message;
+    elements.loginMessage.className = `message ${type}`;
+    elements.loginMessage.style.display = 'block';
+    
+    setTimeout(() => {
+        elements.loginMessage.style.display = 'none';
+    }, 5000);
+}
+
+// ========== INICIALIZAÇÃO FINAL ==========
+
+// Adicionar alguns campos de cor iniciais
+window.addEventListener('load', function() {
+    // Adicionar um campo de cor inicial
+    if (typeof addColorField === 'function') {
+        addColorField();
+    }
+    
+    // Inicializar a aplicação
+    if (typeof initApp === 'function') {
+        setTimeout(initApp, 100);
+    }
+});
+
+// Inicializar quando o DOM estiver pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}
 }
     </script>
 </body>
