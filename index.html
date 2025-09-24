@@ -2443,7 +2443,7 @@ function initApp() {
     auth.onAuthStateChanged((user) => {
         if (user) {
             currentUser = user;
-            if (elements.adminPanel) elements.adminPanel.style.display = 'block';
+            if (elements.adminPanel) elements.adminPanel.style.display = 'none';
             if (elements.loginModal) elements.loginModal.style.display = 'none';
             loadAdminData();
         } else {
